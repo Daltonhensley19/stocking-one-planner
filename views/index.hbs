@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stocking One Planner</title>
+  <link rel="stylesheet" href="/public/css/styles.css">
+</head>
+<body class="bg-gray-50 h-screen flex flex-col">
+  <!-- Header with logout -->
+  <div class="bg-white shadow-sm px-6 py-3 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-gray-800">Stocking One Planner</h1>
+    <button
+      id="logout-button"
+      class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition duration-200"
+    >
+      Logout
+    </button>
+  </div>
+
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Left Sidebar -->
+    <div class="w-96 bg-white shadow-lg p-6 flex flex-col overflow-y-auto">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Associates</h2>
+
+    <!-- Associates Dropdown -->
+    <div class="mb-6">
+      <label for="associates-select" class="block text-sm font-medium text-gray-700 mb-2">
+        Select Associate
+      </label>
+      <select
+        id="associates-select"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      >
+        <option value="">-- Select an Associate --</option>
+      </select>
+    </div>
+
+    <!-- Add/Remove Associate Section -->
+    <div class="border-t border-gray-200 pt-6 mb-6">
+      <h3 class="text-lg font-semibold text-gray-700 mb-4">Manage Associates</h3>
+
+      <div class="space-y-3">
+        <!-- Input for new associate -->
+        <div>
+          <label for="associate-input" class="block text-sm font-medium text-gray-700 mb-2">
+            Associate Name
+          </label>
+          <input
+            type="text"
+            id="associate-input"
+            placeholder="Enter name..."
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <!-- Add/Remove Buttons -->
+        <div class="flex gap-2">
+          <button
+            id="add-associate-btn"
+            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-200"
+          >
+            Add
+          </button>
+          <button
+            id="remove-associate-btn"
+            class="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition duration-200"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task Assignment Section (hidden until associate is selected) -->
+    <div id="task-assignment-section" class="hidden border-t border-gray-200 pt-6">
+      <h3 class="text-lg font-semibold text-gray-700 mb-2">
+        Assign Tasks to: <span id="selected-associate-name" class="text-blue-600"></span>
+      </h3>
+
+      <!-- Task List -->
+      <div class="mt-4">
+        <div id="task-list" class="space-y-2.5 max-h-80 overflow-y-auto">
+          <!-- Tasks will be dynamically added here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="flex-1 p-8 overflow-y-auto">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Daily Work Plan</h1>
+
+    <!-- Assignments Overview -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Task Assignments</h2>
+      <div id="assignments-overview" class="overflow-x-auto">
+        <p class="text-gray-500 italic">No associates added yet. Add an associate to get started.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <script>
+    // JWT Authentication handling
+    const token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
+
+    // Redirect to login if no token
+    if (!token) {
+      window.location.href = '/';
+    }
+
+    // Helper function to make authenticated API requests
+    async function authenticatedFetch(url, options = {}) {
+      const headers = {
+        ...options.headers,
+        'Authorization': `Bearer ${token}`,
+      };
+
+      const response = await fetch(url, { ...options, headers });
+
+      // If unauthorized, redirect to login
+      if (response.status === 401) {
+        localStorage.removeItem('access_token');
+        sessionStorage.removeItem('access_token');
+        window.location.href = '/';
+        throw new Error('Unauthorized');
+      }
+
+      return response;
+    }
+
+    // Logout functionality
+    document.getElementById('logout-button').addEventListener('click', () => {
+      localStorage.removeItem('access_token');
+      sessionStorage.removeItem('access_token');
+      window.location.href = '/';
+    });
+
+    // Task list from tasks.txt
+    const availableTasks = [
+      "Paper, Pets, and Chemicals.",
+      "New mod.",
+      "Rollies.",
+      "Automotive and Sporting goods.",
+      "Housewares.",
+      "Infants.",
+      "Grocery and 95.",
+      "Topsteel.",
+      "Trailers.",
+      "Scan early.",
+      "Top Stock.",
+      "Bikes, Crafts, Batteries, and Furniture."
+    ];
+
+    // Associates management
+    let associates = []; // Array of { id, name } objects from database
+    let assignedTasks = {}; // { associateName: [taskIndexes] }
+
+    const associatesSelect = document.getElementById('associates-select');
+    const associateInput = document.getElementById('associate-input');
+    const addBtn = document.getElementById('add-associate-btn');
+    const removeBtn = document.getElementById('remove-associate-btn');
+    const taskAssignmentSection = document.getElementById('task-assignment-section');
+    const selectedAssociateName = document.getElementById('selected-associate-name');
+    const taskListContainer = document.getElementById('task-list');
+    const assignmentsOverview = document.getElementById('assignments-overview');
+
+    // Load associates from database
+    async function loadAssociates() {
+      try {
+        const response = await authenticatedFetch('/api/associates');
+        const data = await response.json();
+        associates = data;
+        associates.forEach(associate => {
+          assignedTasks[associate.name] = [];
+        });
+        updateDropdown();
+        updateAssignmentsOverview();
+      } catch (error) {
+        console.error('Failed to load associates:', error);
+        if (error.message !== 'Unauthorized') {
+          alert('Failed to load associates from database');
+        }
+      }
+    }
+
+    // Handle task checkbox changes
+    function handleTaskCheckboxChange(checkbox) {
+      const selectedIndex = associatesSelect.value;
+      if (selectedIndex === '') return;
+
+      const associate = associates[selectedIndex];
+      const taskIndex = parseInt(checkbox.value);
+
+      if (checkbox.checked) {
+        // Add task if not already in the list
+        if (!assignedTasks[associate.name].includes(taskIndex)) {
+          assignedTasks[associate.name].push(taskIndex);
+        }
+      } else {
+        // Remove task from the list
+        assignedTasks[associate.name] = assignedTasks[associate.name].filter(
+          t => t !== taskIndex
+        );
+      }
+
+      // Update the table immediately
+      updateAssignmentsOverview();
+    }
+
+    // Initialize task list
+    function initializeTaskList() {
+      taskListContainer.innerHTML = '';
+      availableTasks.forEach((task, index) => {
+        const taskDiv = document.createElement('div');
+        taskDiv.className = 'flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer active:bg-gray-200';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `task-${index}`;
+        checkbox.value = index;
+        checkbox.className = 'task-checkbox w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 flex-shrink-0 cursor-pointer';
+
+        const label = document.createElement('label');
+        label.htmlFor = `task-${index}`;
+        label.className = 'ml-3 text-base text-gray-700 cursor-pointer flex-1 select-none';
+        label.textContent = `${index + 1}. ${task}`;
+
+        // Make the entire row clickable
+        taskDiv.addEventListener('click', function(e) {
+          // Only toggle if we didn't click directly on the checkbox
+          if (e.target !== checkbox) {
+            checkbox.checked = !checkbox.checked;
+            handleTaskCheckboxChange(checkbox);
+          }
+        });
+
+        // Add change event listener for real-time updates
+        checkbox.addEventListener('change', function() {
+          handleTaskCheckboxChange(this);
+        });
+
+        taskDiv.appendChild(checkbox);
+        taskDiv.appendChild(label);
+        taskListContainer.appendChild(taskDiv);
+      });
+    }
+
+    // Update task checkboxes based on current associate's assignments
+    function updateTaskCheckboxes() {
+      const selectedIndex = associatesSelect.value;
+      if (selectedIndex === '') return;
+
+      const associate = associates[selectedIndex];
+      const currentTasks = assignedTasks[associate.name] || [];
+
+      document.querySelectorAll('.task-checkbox').forEach((checkbox) => {
+        checkbox.checked = currentTasks.includes(parseInt(checkbox.value));
+      });
+    }
+
+    // Update assignments overview display
+    function updateAssignmentsOverview() {
+      if (associates.length === 0) {
+        assignmentsOverview.innerHTML = '<p class="text-gray-500 italic">No associates added yet. Add an associate to get started.</p>';
+        return;
+      }
+
+      let tableHTML = `
+        <table class="min-w-full divide-y divide-gray-200 border border-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
+                Associate Name
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Assigned Tasks
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+      `;
+
+      associates.forEach(associate => {
+        const tasks = assignedTasks[associate.name] || [];
+        const tasksList = tasks.length > 0
+          ? `<ul class="list-disc list-inside text-gray-700 space-y-1">
+              ${tasks.map(taskIndex => `<li>${availableTasks[taskIndex]}</li>`).join('')}
+            </ul>`
+          : '<span class="text-gray-400 italic">No tasks assigned</span>';
+
+        tableHTML += `
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
+              ${associate.name}
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-700">
+              ${tasksList}
+            </td>
+          </tr>
+        `;
+      });
+
+      tableHTML += `
+          </tbody>
+        </table>
+      `;
+
+      assignmentsOverview.innerHTML = tableHTML;
+    }
+
+    // Update dropdown with current associates
+    function updateDropdown() {
+      associatesSelect.innerHTML = '<option value="">-- Select an Associate --</option>';
+      associates.forEach((associate, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = associate.name;
+        associatesSelect.appendChild(option);
+      });
+    }
+
+    // Add associate
+    addBtn.addEventListener('click', async () => {
+      const name = associateInput.value.trim();
+      if (!name) {
+        alert('Please enter a name!');
+        return;
+      }
+
+      // Check if associate already exists
+      if (associates.some(a => a.name === name)) {
+        alert('Associate already exists!');
+        return;
+      }
+
+      try {
+        const response = await authenticatedFetch('/api/associates', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          alert(error.message || 'Failed to add associate');
+          return;
+        }
+
+        const newAssociate = await response.json();
+        associates.push(newAssociate);
+        assignedTasks[newAssociate.name] = [];
+        updateDropdown();
+        associateInput.value = '';
+        updateAssignmentsOverview();
+
+        // Auto-select the newly added associate
+        const newIndex = associates.length - 1;
+        associatesSelect.value = newIndex;
+
+        // Trigger the change event to show task assignment section
+        selectedAssociateName.textContent = newAssociate.name;
+        taskAssignmentSection.classList.remove('hidden');
+        updateTaskCheckboxes();
+      } catch (error) {
+        console.error('Failed to add associate:', error);
+        alert('Failed to add associate to database');
+      }
+    });
+
+    // Remove associate
+    removeBtn.addEventListener('click', async () => {
+      const selectedIndex = associatesSelect.value;
+      if (selectedIndex === '') {
+        alert('Please select an associate to remove!');
+        return;
+      }
+
+      const associate = associates[selectedIndex];
+
+      try {
+        const response = await authenticatedFetch(`/api/associates/${associate.id}`, {
+          method: 'DELETE'
+        });
+
+        if (!response.ok) {
+          alert('Failed to remove associate');
+          return;
+        }
+
+        // Remove from local array
+        associates.splice(selectedIndex, 1);
+        delete assignedTasks[associate.name];
+        updateDropdown();
+        taskAssignmentSection.classList.add('hidden');
+        updateAssignmentsOverview();
+        alert(`Removed: ${associate.name}`);
+      } catch (error) {
+        console.error('Failed to remove associate:', error);
+        alert('Failed to remove associate from database');
+      }
+    });
+
+    // When associate is selected, show task assignment section
+    associatesSelect.addEventListener('change', () => {
+      const selectedIndex = associatesSelect.value;
+      if (selectedIndex !== '') {
+        const associate = associates[selectedIndex];
+        selectedAssociateName.textContent = associate.name;
+        taskAssignmentSection.classList.remove('hidden');
+        updateTaskCheckboxes();
+      } else {
+        taskAssignmentSection.classList.add('hidden');
+      }
+    });
+
+    // Allow Enter key to add associate
+    associateInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        addBtn.click();
+      }
+    });
+
+    // Initialize task list and load associates from database on page load
+    initializeTaskList();
+    loadAssociates();
+  </script>
+</body>
+</html>
