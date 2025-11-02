@@ -6,96 +6,150 @@
   <title>Stocking One Planner</title>
   <link rel="stylesheet" href="/public/css/styles.css">
 </head>
-<body class="bg-gray-50 h-screen flex flex-col">
-  <!-- Header with logout -->
-  <div class="bg-white shadow-sm px-6 py-3 flex justify-between items-center">
-    <h1 class="text-xl font-bold text-gray-800">Stocking One Planner</h1>
+<body class="bg-slate-100 h-screen flex flex-col">
+  <!-- Corporate Header -->
+  <div class="bg-slate-800 shadow-lg px-8 py-4 flex justify-between items-center border-b-4 border-blue-600">
+    <div class="flex items-center space-x-4">
+      <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold text-white tracking-wide">STOCKING ONE PLANNER</h1>
+        <p class="text-xs text-slate-300">Workforce Management System</p>
+      </div>
+    </div>
     <button
       id="logout-button"
-      class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition duration-200"
+      class="bg-slate-700 hover:bg-slate-600 text-white font-medium py-2 px-6 rounded border border-slate-600 transition duration-200"
     >
-      Logout
+      Sign Out
     </button>
   </div>
 
   <div class="flex flex-1 overflow-hidden">
     <!-- Left Sidebar -->
-    <div class="w-96 bg-white shadow-lg p-6 flex flex-col overflow-y-auto">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6">Associates</h2>
+    <div class="w-96 bg-white border-r border-slate-200 flex flex-col overflow-y-auto">
+      <div class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+        <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wide">Team Management</h2>
+      </div>
 
-    <!-- Associates Dropdown -->
-    <div class="mb-6">
-      <label for="associates-select" class="block text-sm font-medium text-gray-700 mb-2">
-        Select Associate
-      </label>
-      <select
-        id="associates-select"
-        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-      >
-        <option value="">-- Select an Associate --</option>
-      </select>
-    </div>
-
-    <!-- Add/Remove Associate Section -->
-    <div class="border-t border-gray-200 pt-6 mb-6">
-      <h3 class="text-lg font-semibold text-gray-700 mb-4">Manage Associates</h3>
-
-      <div class="space-y-3">
-        <!-- Input for new associate -->
+      <div class="p-6 space-y-6">
+        <!-- Associates Dropdown -->
         <div>
-          <label for="associate-input" class="block text-sm font-medium text-gray-700 mb-2">
-            Associate Name
+          <label for="associates-select" class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2">
+            Select Associate
           </label>
-          <input
-            type="text"
-            id="associate-input"
-            placeholder="Enter name..."
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
+          <select
+            id="associates-select"
+            class="w-full px-4 py-2.5 border border-slate-300 rounded bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="">-- Select an Associate --</option>
+          </select>
         </div>
 
-        <!-- Add/Remove Buttons -->
-        <div class="flex gap-2">
-          <button
-            id="add-associate-btn"
-            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-200"
-          >
-            Add
-          </button>
-          <button
-            id="remove-associate-btn"
-            class="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition duration-200"
-          >
-            Remove
-          </button>
+        <!-- Add/Remove Associate Section -->
+        <div class="border-t border-slate-200 pt-6">
+          <h3 class="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-4">Associate Controls</h3>
+
+          <div class="space-y-3">
+            <!-- Input for new associate -->
+            <div>
+              <label for="associate-input" class="block text-xs font-medium text-slate-600 mb-2">
+                Full Name
+              </label>
+              <input
+                type="text"
+                id="associate-input"
+                placeholder="Enter associate name..."
+                class="w-full px-4 py-2.5 border border-slate-300 rounded bg-white text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            <!-- Add/Remove Buttons -->
+            <div class="flex gap-3">
+              <button
+                id="add-associate-btn"
+                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded shadow-sm transition duration-200"
+              >
+                + Add
+              </button>
+              <button
+                id="remove-associate-btn"
+                class="flex-1 bg-slate-600 hover:bg-slate-700 text-white font-semibold py-2.5 px-4 rounded shadow-sm transition duration-200"
+              >
+                − Remove
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task Assignment Section (hidden until associate is selected) -->
+        <div id="task-assignment-section" class="hidden border-t border-slate-200 pt-6">
+          <h3 class="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-3">
+            Assign Tasks to: <span id="selected-associate-name" class="text-blue-600 font-bold"></span>
+          </h3>
+
+          <!-- Task List -->
+          <div class="mt-4">
+            <div id="task-list" class="space-y-2 max-h-80 overflow-y-auto">
+              <!-- Tasks will be dynamically added here -->
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Task Assignment Section (hidden until associate is selected) -->
-    <div id="task-assignment-section" class="hidden border-t border-gray-200 pt-6">
-      <h3 class="text-lg font-semibold text-gray-700 mb-2">
-        Assign Tasks to: <span id="selected-associate-name" class="text-blue-600"></span>
-      </h3>
-
-      <!-- Task List -->
-      <div class="mt-4">
-        <div id="task-list" class="space-y-2.5 max-h-80 overflow-y-auto">
-          <!-- Tasks will be dynamically added here -->
+    <!-- Main Content Area -->
+    <div class="flex-1 bg-slate-50 p-8 overflow-y-auto">
+      <div class="max-w-7xl mx-auto">
+        <div class="mb-6 flex justify-between items-center">
+          <div>
+            <h1 class="text-2xl font-bold text-slate-800 uppercase tracking-wide">Daily Work Plan</h1>
+            <p class="text-sm text-slate-600 mt-1">Task assignments and workforce allocation</p>
+          </div>
+          <button
+            id="view-text-btn"
+            class="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2.5 px-6 rounded shadow-sm transition duration-200"
+          >
+            View as Text
+          </button>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Main Content Area -->
-  <div class="flex-1 p-8 overflow-y-auto">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">Daily Work Plan</h1>
+        <!-- Text View Section (hidden by default) -->
+        <div id="text-view-section" class="hidden mb-6 bg-white rounded-lg shadow border border-slate-200 p-6">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-slate-800 uppercase tracking-wide">Text Format</h2>
+            <button
+              id="close-text-btn"
+              class="text-slate-500 hover:text-slate-700 font-semibold text-sm"
+            >
+              ✕ Close
+            </button>
+          </div>
+          <textarea
+            id="text-output"
+            readonly
+            class="w-full h-64 p-4 border-2 border-slate-300 rounded bg-slate-50 text-slate-800 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+          ></textarea>
+          <button
+            id="copy-text-btn"
+            class="mt-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow-sm transition duration-200"
+          >
+            📋 Copy to Clipboard
+          </button>
+        </div>
 
-    <!-- Assignments Overview -->
-    <div class="bg-white rounded-lg shadow-md p-6">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Task Assignments</h2>
-      <div id="assignments-overview" class="overflow-x-auto">
-        <p class="text-gray-500 italic">No associates added yet. Add an associate to get started.</p>
+        <!-- Assignments Overview -->
+        <div class="bg-white rounded-lg shadow border border-slate-200">
+          <div class="bg-slate-800 text-white px-6 py-4 rounded-t-lg">
+            <h2 class="text-lg font-semibold uppercase tracking-wide">Current Assignments</h2>
+          </div>
+          <div id="assignments-overview" class="p-6">
+            <p class="text-slate-500 italic">No associates added yet. Add an associate to get started.</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -214,17 +268,17 @@
       taskListContainer.innerHTML = '';
       availableTasks.forEach((task, index) => {
         const taskDiv = document.createElement('div');
-        taskDiv.className = 'flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer active:bg-gray-200';
+        taskDiv.className = 'flex items-center p-3.5 bg-slate-50 border border-slate-200 rounded hover:bg-blue-50 hover:border-blue-300 transition cursor-pointer active:bg-blue-100';
 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.id = `task-${index}`;
         checkbox.value = index;
-        checkbox.className = 'task-checkbox w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 flex-shrink-0 cursor-pointer';
+        checkbox.className = 'task-checkbox w-5 h-5 text-blue-600 border-slate-300 rounded focus:ring-blue-500 focus:ring-2 flex-shrink-0 cursor-pointer';
 
         const label = document.createElement('label');
         label.htmlFor = `task-${index}`;
-        label.className = 'ml-3 text-base text-gray-700 cursor-pointer flex-1 select-none';
+        label.className = 'ml-3 text-sm text-slate-700 cursor-pointer flex-1 select-none font-medium';
         label.textContent = `${index + 1}. ${task}`;
 
         // Make the entire row clickable
@@ -263,39 +317,39 @@
     // Update assignments overview display
     function updateAssignmentsOverview() {
       if (associates.length === 0) {
-        assignmentsOverview.innerHTML = '<p class="text-gray-500 italic">No associates added yet. Add an associate to get started.</p>';
+        assignmentsOverview.innerHTML = '<p class="text-slate-500 italic">No associates added yet. Add an associate to get started.</p>';
         return;
       }
 
       let tableHTML = `
-        <table class="min-w-full divide-y divide-gray-200 border border-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
+        <table class="min-w-full">
+          <thead>
+            <tr class="border-b-2 border-slate-300">
+              <th class="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider bg-slate-100 border-r border-slate-200">
                 Associate Name
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider bg-slate-100">
                 Assigned Tasks
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody class="divide-y divide-slate-200">
       `;
 
       associates.forEach(associate => {
         const tasks = assignedTasks[associate.name] || [];
         const tasksList = tasks.length > 0
-          ? `<ul class="list-disc list-inside text-gray-700 space-y-1">
-              ${tasks.map(taskIndex => `<li>${availableTasks[taskIndex]}</li>`).join('')}
+          ? `<ul class="list-disc list-inside text-slate-700 space-y-1.5">
+              ${tasks.map(taskIndex => `<li class="text-sm">${availableTasks[taskIndex]}</li>`).join('')}
             </ul>`
-          : '<span class="text-gray-400 italic">No tasks assigned</span>';
+          : '<span class="text-slate-400 italic text-sm">No tasks assigned</span>';
 
         tableHTML += `
-          <tr class="hover:bg-gray-50">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
+          <tr class="hover:bg-slate-50 transition">
+            <td class="px-6 py-4 text-sm font-semibold text-slate-800 border-r border-slate-200 bg-slate-50">
               ${associate.name}
             </td>
-            <td class="px-6 py-4 text-sm text-gray-700">
+            <td class="px-6 py-4 text-sm text-slate-700">
               ${tasksList}
             </td>
           </tr>
@@ -425,6 +479,63 @@
     // Initialize task list and load associates from database on page load
     initializeTaskList();
     loadAssociates();
+
+    // Text view functionality
+    const viewTextBtn = document.getElementById('view-text-btn');
+    const closeTextBtn = document.getElementById('close-text-btn');
+    const copyTextBtn = document.getElementById('copy-text-btn');
+    const textViewSection = document.getElementById('text-view-section');
+    const textOutput = document.getElementById('text-output');
+
+    function generateTextFormat() {
+      if (associates.length === 0) {
+        return 'No associates added yet.';
+      }
+
+      let text = '';
+      associates.forEach(associate => {
+        const tasks = assignedTasks[associate.name] || [];
+        text += `${associate.name}:\n`;
+
+        if (tasks.length > 0) {
+          tasks.forEach(taskIndex => {
+            text += `  - ${availableTasks[taskIndex]}\n`;
+          });
+        } else {
+          text += `  (No tasks assigned)\n`;
+        }
+        text += '\n';
+      });
+
+      return text.trim();
+    }
+
+    viewTextBtn.addEventListener('click', () => {
+      textOutput.value = generateTextFormat();
+      textViewSection.classList.remove('hidden');
+    });
+
+    closeTextBtn.addEventListener('click', () => {
+      textViewSection.classList.add('hidden');
+    });
+
+    copyTextBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(textOutput.value);
+        const originalText = copyTextBtn.textContent;
+        copyTextBtn.textContent = '✓ Copied!';
+        copyTextBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+        copyTextBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+
+        setTimeout(() => {
+          copyTextBtn.textContent = originalText;
+          copyTextBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+          copyTextBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+        }, 2000);
+      } catch (err) {
+        alert('Failed to copy to clipboard');
+      }
+    });
   </script>
 </body>
 </html>

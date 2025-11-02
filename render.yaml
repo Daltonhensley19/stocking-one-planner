@@ -1,0 +1,16 @@
+services:
+  # Web Service (NestJS Backend)
+  - type: web
+    name: stocking-one-planner
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false  # Set this manually in Render dashboard or link to a database
+      - key: JWT_SECRET
+        generateValue: true  # Render will auto-generate a secure secret
+    healthCheckPath: /

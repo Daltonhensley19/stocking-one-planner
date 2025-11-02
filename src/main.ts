@@ -10,6 +10,8 @@ async function bootstrap() {
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('hbs');
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
+  console.log(`🚀 Application is running on: http://localhost:3000`);
+  console.log(`📱 Access from phone: http://192.168.1.203:3000`);
 }
 bootstrap();
