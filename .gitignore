@@ -37,9 +37,6 @@ Thumbs.db
 # Test coverage
 coverage/
 
-# Compiled CSS (generated from Tailwind)
-public/css/
-
 # Temporary files
 *.tmp
 *.temp
