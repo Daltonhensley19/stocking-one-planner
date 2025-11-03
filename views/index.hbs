@@ -206,6 +206,100 @@
     </div>
   </div>
 
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed top-4 right-4 z-[60] flex flex-col gap-2 pointer-events-none">
+    <!-- Toasts will be dynamically added here -->
+  </div>
+
+  <style>
+    /* Toast notification styles */
+    .toast {
+      pointer-events: auto;
+      min-width: 300px;
+      max-width: 500px;
+      padding: 1rem 1.25rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      animation: slideIn 0.3s ease-out;
+      transition: all 0.3s ease;
+    }
+
+    .toast.removing {
+      animation: slideOut 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+    }
+
+    .toast-success {
+      background-color: #10b981;
+      color: white;
+    }
+
+    .toast-error {
+      background-color: #ef4444;
+      color: white;
+    }
+
+    .toast-warning {
+      background-color: #f59e0b;
+      color: white;
+    }
+
+    .toast-info {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    .toast-icon {
+      flex-shrink: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    .toast-message {
+      flex: 1;
+      font-size: 0.875rem;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .toast-close {
+      flex-shrink: 0;
+      width: 1.25rem;
+      height: 1.25rem;
+      cursor: pointer;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .toast-close:hover {
+      opacity: 1;
+    }
+  </style>
+
   <script>
     // JWT Authentication handling
     const token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
@@ -235,13 +329,66 @@
       return response;
     }
 
+    // Toast Notification System
+    function showToast(message, type = 'info', duration = 4000) {
+      const toastContainer = document.getElementById('toast-container');
+
+      // Create toast element
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+
+      // Icon based on type
+      let icon = '';
+      switch(type) {
+        case 'success':
+          icon = '<svg class="toast-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+          break;
+        case 'error':
+          icon = '<svg class="toast-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+          break;
+        case 'warning':
+          icon = '<svg class="toast-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>';
+          break;
+        case 'info':
+          icon = '<svg class="toast-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+          break;
+      }
+
+      toast.innerHTML = `
+        ${icon}
+        <div class="toast-message">${message}</div>
+        <svg class="toast-close" fill="none" stroke="currentColor" viewBox="0 0 24 24" onclick="this.parentElement.remove()">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      `;
+
+      // Add to container
+      toastContainer.appendChild(toast);
+
+      // Auto remove after duration
+      setTimeout(() => {
+        toast.classList.add('removing');
+        setTimeout(() => {
+          toast.remove();
+        }, 300);
+      }, duration);
+    }
+
     // Logout functionality
     document.getElementById('logout-button').addEventListener('click', async () => {
+      const logoutBtn = document.getElementById('logout-button');
+
       // Ask if they want to clear the table before signing out
       if (associates.length > 0) {
         const shouldClear = confirm('Would you like to clear the table before signing out?\n\nClick OK to clear the table, or Cancel to sign out without clearing.');
 
         if (shouldClear) {
+          // Show loading state
+          const originalText = logoutBtn.textContent;
+          logoutBtn.disabled = true;
+          logoutBtn.textContent = 'Clearing...';
+          logoutBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
           // Clear the table
           let successCount = 0;
           let failCount = 0;
@@ -266,9 +413,24 @@
 
           // Show result if there were any failures
           if (failCount > 0) {
-            alert(`Cleared ${successCount} associate(s), but ${failCount} failed to remove.`);
+            showToast(`Cleared ${successCount} associate(s), but ${failCount} failed to remove.`, 'warning');
+          } else if (successCount > 0) {
+            showToast(`Cleared ${successCount} associate(s) successfully.`, 'success');
           }
+
+          // Update button text for signing out
+          logoutBtn.textContent = 'Signing Out...';
+        } else {
+          // Show loading state for sign out
+          logoutBtn.disabled = true;
+          logoutBtn.textContent = 'Signing Out...';
+          logoutBtn.classList.add('opacity-50', 'cursor-not-allowed');
         }
+      } else {
+        // Show loading state for sign out
+        logoutBtn.disabled = true;
+        logoutBtn.textContent = 'Signing Out...';
+        logoutBtn.classList.add('opacity-50', 'cursor-not-allowed');
       }
 
       // Sign out
@@ -355,7 +517,7 @@
       } catch (error) {
         console.error('Failed to load associates:', error);
         if (error.message !== 'Unauthorized') {
-          alert('Failed to load associates from database');
+          showToast('Failed to load associates from database', 'error');
         }
       }
     }
@@ -491,7 +653,7 @@
 
       const customTaskText = customTaskInput.value.trim();
       if (!customTaskText) {
-        alert('Please enter a task description.');
+        showToast('Please enter a task description.', 'warning');
         return;
       }
 
@@ -603,47 +765,68 @@
       const namesToAdd = Array.from(selectedCheckboxes).map(cb => cb.value);
 
       if (namesToAdd.length === 0) {
-        alert('Please select at least one associate to add.');
+        showToast('Please select at least one associate to add.', 'warning');
         return;
       }
 
-      // Add each selected name to the database
-      let successCount = 0;
-      let failCount = 0;
+      // Show loading state
+      const originalText = confirmQuickAddBtn.textContent;
+      confirmQuickAddBtn.disabled = true;
+      confirmQuickAddBtn.textContent = 'Adding...';
+      confirmQuickAddBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      cancelQuickAddBtn.disabled = true;
+      cancelQuickAddBtn.classList.add('opacity-50', 'cursor-not-allowed');
 
-      for (const name of namesToAdd) {
-        try {
-          const response = await authenticatedFetch('/api/associates', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name })
-          });
+      try {
+        // Add each selected name to the database
+        let successCount = 0;
+        let failCount = 0;
 
-          if (response.ok) {
-            const newAssociate = await response.json();
-            associates.push(newAssociate);
-            assignedTasks[newAssociate.name] = [];
-            successCount++;
-          } else {
+        for (const name of namesToAdd) {
+          try {
+            const response = await authenticatedFetch('/api/associates', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name })
+            });
+
+            if (response.ok) {
+              const newAssociate = await response.json();
+              associates.push(newAssociate);
+              assignedTasks[newAssociate.name] = [];
+              successCount++;
+            } else {
+              failCount++;
+            }
+          } catch (error) {
+            console.error(`Failed to add ${name}:`, error);
             failCount++;
           }
-        } catch (error) {
-          console.error(`Failed to add ${name}:`, error);
-          failCount++;
         }
-      }
 
-      // Update the table
-      updateAssignmentsOverview();
+        // Update the table
+        updateAssignmentsOverview();
 
-      // Close the modal
-      closeQuickAddModal();
+        // Close the modal
+        closeQuickAddModal();
 
-      // Show result
-      if (successCount > 0) {
-        alert(`Successfully added ${successCount} associate(s)${failCount > 0 ? `, ${failCount} failed` : ''}.`);
-      } else {
-        alert('Failed to add associates. Please try again.');
+        // Show result
+        if (successCount > 0) {
+          if (failCount > 0) {
+            showToast(`Added ${successCount} associate(s), but ${failCount} failed.`, 'warning');
+          } else {
+            showToast(`Successfully added ${successCount} associate(s)!`, 'success');
+          }
+        } else {
+          showToast('Failed to add associates. Please try again.', 'error');
+        }
+      } finally {
+        // Reset button states
+        confirmQuickAddBtn.disabled = false;
+        confirmQuickAddBtn.textContent = originalText;
+        confirmQuickAddBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        cancelQuickAddBtn.disabled = false;
+        cancelQuickAddBtn.classList.remove('opacity-50', 'cursor-not-allowed');
       }
     }
 
@@ -665,7 +848,7 @@
 
     async function clearTable() {
       if (associates.length === 0) {
-        alert('Table is already empty.');
+        showToast('Table is already empty.', 'info');
         return;
       }
 
@@ -673,39 +856,56 @@
         return;
       }
 
-      let successCount = 0;
-      let failCount = 0;
+      // Show loading state
+      const originalText = clearTableBtn.textContent;
+      clearTableBtn.disabled = true;
+      clearTableBtn.textContent = 'Clearing...';
+      clearTableBtn.classList.add('opacity-50', 'cursor-not-allowed');
 
-      // Delete each associate from the database
-      for (const associate of [...associates]) {
-        try {
-          const response = await authenticatedFetch(`/api/associates/${associate.id}`, {
-            method: 'DELETE'
-          });
+      try {
+        let successCount = 0;
+        let failCount = 0;
 
-          if (response.ok) {
-            successCount++;
-          } else {
+        // Delete each associate from the database
+        for (const associate of [...associates]) {
+          try {
+            const response = await authenticatedFetch(`/api/associates/${associate.id}`, {
+              method: 'DELETE'
+            });
+
+            if (response.ok) {
+              successCount++;
+            } else {
+              failCount++;
+            }
+          } catch (error) {
+            console.error(`Failed to remove ${associate.name}:`, error);
             failCount++;
           }
-        } catch (error) {
-          console.error(`Failed to remove ${associate.name}:`, error);
-          failCount++;
         }
-      }
 
-      // Clear local arrays
-      associates = [];
-      assignedTasks = {};
+        // Clear local arrays
+        associates = [];
+        assignedTasks = {};
 
-      // Update the table
-      updateAssignmentsOverview();
+        // Update the table
+        updateAssignmentsOverview();
 
-      // Show result
-      if (successCount > 0) {
-        alert(`Successfully removed ${successCount} associate(s)${failCount > 0 ? `, ${failCount} failed` : ''}.`);
-      } else {
-        alert('Failed to clear table. Please try again.');
+        // Show result
+        if (successCount > 0) {
+          if (failCount > 0) {
+            showToast(`Removed ${successCount} associate(s), but ${failCount} failed.`, 'warning');
+          } else {
+            showToast(`Successfully cleared ${successCount} associate(s)!`, 'success');
+          }
+        } else {
+          showToast('Failed to clear table. Please try again.', 'error');
+        }
+      } finally {
+        // Reset button state
+        clearTableBtn.disabled = false;
+        clearTableBtn.textContent = originalText;
+        clearTableBtn.classList.remove('opacity-50', 'cursor-not-allowed');
       }
     }
 
@@ -760,7 +960,7 @@
             </td>
             <td class="px-2.5 sm:px-6 py-2.5 sm:py-4 text-center">
               <button
-                onclick="removeAssociate(${index})"
+                onclick="removeAssociate(${index}, event)"
                 class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-3 sm:px-4 rounded shadow-sm transition duration-200 text-xs sm:text-sm"
                 title="Remove ${associate.name}"
               >
@@ -783,15 +983,21 @@
     addBtn.addEventListener('click', async () => {
       const name = associateInput.value.trim();
       if (!name) {
-        alert('Please enter a name!');
+        showToast('Please enter a name!', 'warning');
         return;
       }
 
       // Check if associate already exists
       if (associates.some(a => a.name === name)) {
-        alert('Associate already exists!');
+        showToast('Associate already exists!', 'warning');
         return;
       }
+
+      // Show loading state
+      const originalText = addBtn.textContent;
+      addBtn.disabled = true;
+      addBtn.textContent = 'Adding...';
+      addBtn.classList.add('opacity-50', 'cursor-not-allowed');
 
       try {
         const response = await authenticatedFetch('/api/associates', {
@@ -802,7 +1008,7 @@
 
         if (!response.ok) {
           const error = await response.json();
-          alert(error.message || 'Failed to add associate');
+          showToast(error.message || 'Failed to add associate', 'error');
           return;
         }
 
@@ -811,18 +1017,33 @@
         assignedTasks[newAssociate.name] = [];
         associateInput.value = '';
         updateAssignmentsOverview();
+        showToast(`${newAssociate.name} added successfully!`, 'success');
       } catch (error) {
         console.error('Failed to add associate:', error);
-        alert('Failed to add associate to database');
+        showToast('Failed to add associate to database', 'error');
+      } finally {
+        // Reset button state
+        addBtn.disabled = false;
+        addBtn.textContent = originalText;
+        addBtn.classList.remove('opacity-50', 'cursor-not-allowed');
       }
     });
 
     // Remove associate
-    async function removeAssociate(index) {
+    async function removeAssociate(index, event) {
       const associate = associates[index];
 
       if (!confirm(`Are you sure you want to remove ${associate.name}?`)) {
         return;
+      }
+
+      // Show loading state on button
+      const button = event ? event.target : null;
+      if (button) {
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = 'Removing...';
+        button.classList.add('opacity-50', 'cursor-not-allowed');
       }
 
       try {
@@ -831,7 +1052,12 @@
         });
 
         if (!response.ok) {
-          alert('Failed to remove associate');
+          showToast('Failed to remove associate', 'error');
+          if (button) {
+            button.disabled = false;
+            button.textContent = 'Remove';
+            button.classList.remove('opacity-50', 'cursor-not-allowed');
+          }
           return;
         }
 
@@ -839,9 +1065,15 @@
         associates.splice(index, 1);
         delete assignedTasks[associate.name];
         updateAssignmentsOverview();
+        showToast(`${associate.name} removed successfully!`, 'success');
       } catch (error) {
         console.error('Failed to remove associate:', error);
-        alert('Failed to remove associate from database');
+        showToast('Failed to remove associate from database', 'error');
+        if (button) {
+          button.disabled = false;
+          button.textContent = 'Remove';
+          button.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
       }
     }
 
@@ -944,7 +1176,7 @@
           copyTextBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
         }, 2000);
       } catch (err) {
-        alert('Failed to copy to clipboard');
+        showToast('Failed to copy to clipboard', 'error');
       }
     });
   </script>
