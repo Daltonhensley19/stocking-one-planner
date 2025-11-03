@@ -200,18 +200,40 @@
 
     function openMobileMenu() {
       console.log('Opening mobile menu');
-      sidebar.classList.remove('-translate-x-full');
-      sidebar.classList.add('translate-x-0');
+
+      // Show overlay first
       mobileOverlay.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
+
+      // Force browser to recognize the starting state
+      sidebar.offsetHeight; // Trigger reflow
+
+      // Remove ALL transform classes that could conflict
+      sidebar.classList.remove('-translate-x-full');
+      // Force add the open state
+      sidebar.classList.add('translate-x-0');
+
+      console.log('Sidebar classes after open:', sidebar.className);
+      console.log('Computed transform:', window.getComputedStyle(sidebar).transform);
     }
 
     function closeMobileMenu() {
       console.log('Closing mobile menu');
-      sidebar.classList.add('-translate-x-full');
+
+      // Force browser to recognize the starting state
+      sidebar.offsetHeight; // Trigger reflow
+
+      // Remove the open state
       sidebar.classList.remove('translate-x-0');
+      // Force add the closed state
+      sidebar.classList.add('-translate-x-full');
+
+      // Hide overlay
       mobileOverlay.classList.add('hidden');
       document.body.style.overflow = '';
+
+      console.log('Sidebar classes after close:', sidebar.className);
+      console.log('Computed transform:', window.getComputedStyle(sidebar).transform);
     }
 
     function toggleMobileMenu() {
