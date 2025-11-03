@@ -194,6 +194,10 @@
     const sidebar = document.getElementById('sidebar');
     const mobileOverlay = document.getElementById('mobile-overlay');
 
+    function isMobileMenuOpen() {
+      return sidebar.classList.contains('translate-x-0') && !sidebar.classList.contains('-translate-x-full');
+    }
+
     function openMobileMenu() {
       console.log('Opening mobile menu');
       sidebar.classList.remove('-translate-x-full');
@@ -210,22 +214,40 @@
       document.body.style.overflow = '';
     }
 
+    function toggleMobileMenu() {
+      if (isMobileMenuOpen()) {
+        closeMobileMenu();
+      } else {
+        openMobileMenu();
+      }
+    }
+
+    // Hamburger menu toggles open/close
     if (mobileMenuToggle) {
       mobileMenuToggle.addEventListener('click', function(e) {
         e.preventDefault();
-        openMobileMenu();
+        e.stopPropagation();
+        console.log('Hamburger clicked, menu is open:', isMobileMenuOpen());
+        toggleMobileMenu();
       });
     }
 
+    // X button closes menu
     if (mobileMenuClose) {
       mobileMenuClose.addEventListener('click', function(e) {
         e.preventDefault();
+        e.stopPropagation();
+        console.log('Close button clicked');
         closeMobileMenu();
       });
     }
 
+    // Clicking overlay closes menu
     if (mobileOverlay) {
-      mobileOverlay.addEventListener('click', closeMobileMenu);
+      mobileOverlay.addEventListener('click', function(e) {
+        console.log('Overlay clicked');
+        closeMobileMenu();
+      });
     }
 
     // Helper function to make authenticated API requests
