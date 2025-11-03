@@ -8,125 +8,28 @@
 </head>
 <body class="bg-slate-100 h-screen flex flex-col">
   <!-- Corporate Header -->
-  <div class="bg-slate-800 shadow-lg px-4 sm:px-6 lg:px-8 py-2.5 sm:py-4 flex justify-between items-center border-b-4 border-blue-600">
-    <div class="flex items-center space-x-2 sm:space-x-4">
-      <!-- Mobile Menu Toggle -->
-      <button
-        id="mobile-menu-toggle"
-        class="lg:hidden p-2 text-white hover:bg-slate-700 rounded"
-      >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
-      </button>
-
-      <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <div class="bg-slate-800 shadow-lg px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex justify-between items-center border-b-4 border-blue-600">
+    <div class="flex items-center space-x-3 sm:space-x-4">
+      <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
         </svg>
       </div>
-      <div class="hidden sm:block">
-        <h1 class="text-base sm:text-xl font-bold text-white tracking-wide">STOCKING ONE PLANNER</h1>
-        <p class="text-xs text-slate-300 hidden md:block">Workforce Management System</p>
+      <div>
+        <h1 class="text-lg sm:text-2xl font-bold text-white tracking-wide">STOCKING ONE PLANNER</h1>
+        <p class="text-xs sm:text-sm text-slate-300">Workforce Management System</p>
       </div>
     </div>
     <button
       id="logout-button"
-      class="bg-slate-700 hover:bg-slate-600 text-white font-medium py-3 sm:py-2.5 px-4 sm:px-6 rounded border border-slate-600 transition duration-200 text-sm sm:text-base"
+      class="bg-slate-700 hover:bg-slate-600 text-white font-medium py-2.5 px-4 sm:px-6 rounded border border-slate-600 transition duration-200 text-sm sm:text-base"
     >
-      <span class="hidden sm:inline">Sign Out</span>
-      <span class="sm:hidden">Out</span>
+      Sign Out
     </button>
   </div>
 
-  <div class="flex flex-1 overflow-hidden relative">
-    <!-- Mobile Overlay -->
-    <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden transition-opacity duration-300"></div>
-
-    <!-- Left Sidebar -->
-    <div id="sidebar" class="fixed lg:static top-0 bottom-0 left-0 z-50 w-full sm:w-96 lg:w-96 bg-white border-r border-slate-200 flex flex-col overflow-y-auto -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none">
-      <!-- Mobile Close Button -->
-      <div class="lg:hidden bg-slate-100 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
-        <h2 class="text-base font-bold text-slate-800 uppercase tracking-wide">Menu</h2>
-        <button id="mobile-menu-close" class="text-slate-600 hover:text-slate-800">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        </button>
-      </div>
-
-      <div class="bg-slate-50 px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-200">
-        <h2 class="text-base sm:text-lg font-bold text-slate-800 uppercase tracking-wide">Team Management</h2>
-      </div>
-
-      <div class="p-4 sm:p-6 space-y-4 sm:space-y-6">
-        <!-- Associates Dropdown -->
-        <div>
-          <label for="associates-select" class="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2">
-            Select Associate
-          </label>
-          <select
-            id="associates-select"
-            class="w-full px-4 py-3.5 border border-slate-300 rounded bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
-            <option value="">-- Select an Associate --</option>
-          </select>
-        </div>
-
-        <!-- Add/Remove Associate Section -->
-        <div class="border-t border-slate-200 pt-4 sm:pt-5">
-          <h3 class="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-3 sm:mb-4">Associate Controls</h3>
-
-          <div class="space-y-3">
-            <!-- Input for new associate -->
-            <div>
-              <label for="associate-input" class="block text-xs font-medium text-slate-600 mb-2">
-                Full Name
-              </label>
-              <input
-                type="text"
-                id="associate-input"
-                placeholder="Enter associate name..."
-                class="w-full px-4 py-3.5 border border-slate-300 rounded bg-white text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-
-            <!-- Add/Remove Buttons -->
-            <div class="flex flex-col sm:flex-row gap-3">
-              <button
-                id="add-associate-btn"
-                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 sm:py-2.5 px-4 rounded shadow-sm transition duration-200"
-              >
-                + Add
-              </button>
-              <button
-                id="remove-associate-btn"
-                class="flex-1 bg-slate-600 hover:bg-slate-700 text-white font-semibold py-3 sm:py-2.5 px-4 rounded shadow-sm transition duration-200"
-              >
-                − Remove
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Task Assignment Section (hidden until associate is selected) -->
-        <div id="task-assignment-section" class="hidden border-t border-slate-200 pt-4 sm:pt-5">
-          <h3 class="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-3">
-            Assign Tasks to: <span id="selected-associate-name" class="text-blue-600 font-bold block sm:inline mt-1 sm:mt-0"></span>
-          </h3>
-
-          <!-- Task List -->
-          <div class="mt-3 sm:mt-4">
-            <div id="task-list" class="space-y-2 max-h-60 sm:max-h-80 overflow-y-auto">
-              <!-- Tasks will be dynamically added here -->
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main Content Area -->
-    <div class="flex-1 bg-slate-50 p-3 sm:p-6 lg:p-8 overflow-y-auto">
+  <!-- Main Content Area -->
+  <div class="flex-1 bg-slate-50 p-4 sm:p-6 lg:p-8 overflow-y-auto">
       <div class="max-w-7xl mx-auto">
         <div class="mb-4 sm:mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
           <div>
@@ -165,18 +68,142 @@
           </button>
         </div>
 
+        <!-- Add Associate Section -->
+        <div class="mb-4 sm:mb-6 bg-white rounded-lg shadow border border-slate-200 p-4 sm:p-6">
+          <h2 class="text-base sm:text-lg font-semibold text-slate-800 uppercase tracking-wide mb-4">Add New Associate</h2>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input
+              type="text"
+              id="associate-input"
+              placeholder="Enter associate name..."
+              class="flex-1 px-4 py-3 border border-slate-300 rounded bg-white text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <button
+              id="add-associate-btn"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded shadow-sm transition duration-200 whitespace-nowrap"
+            >
+              + Add Associate
+            </button>
+          </div>
+        </div>
+
         <!-- Assignments Overview -->
         <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden">
-          <div class="bg-slate-800 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-t-lg">
+          <div class="bg-slate-800 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-t-lg flex justify-between items-center">
             <h2 class="text-base sm:text-lg font-semibold uppercase tracking-wide">Current Assignments</h2>
+            <div class="flex gap-2 sm:gap-3">
+              <button
+                id="quick-add-btn"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 sm:px-4 rounded shadow-sm transition duration-200 text-xs sm:text-sm"
+              >
+                Quick Add
+              </button>
+              <button
+                id="clear-table-btn"
+                class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-3 sm:px-4 rounded shadow-sm transition duration-200 text-xs sm:text-sm"
+              >
+                Clear Table
+              </button>
+            </div>
           </div>
           <div id="assignments-overview" class="p-4 sm:p-6 overflow-x-auto">
             <p class="text-slate-500 italic text-sm">No associates added yet. Add an associate to get started.</p>
           </div>
         </div>
       </div>
+  </div>
+
+  <!-- Task Assignment Modal -->
+  <div id="task-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col">
+      <!-- Modal Header -->
+      <div class="bg-slate-800 text-white px-6 py-4 rounded-t-lg flex justify-between items-center border-b-4 border-blue-600">
+        <h2 class="text-lg font-semibold uppercase tracking-wide">
+          Assign Tasks to: <span id="modal-associate-name" class="text-blue-400 font-bold"></span>
+        </h2>
+        <button id="close-modal-btn" class="text-white hover:text-slate-300 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto flex-1">
+        <div id="modal-task-list" class="space-y-2">
+          <!-- Tasks will be dynamically added here -->
+        </div>
+
+        <!-- Custom Task Section -->
+        <div class="mt-6 pt-6 border-t-2 border-slate-200">
+          <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wide mb-3">Add Custom Task</h3>
+          <div class="flex gap-2">
+            <input
+              type="text"
+              id="custom-task-input"
+              placeholder="Enter custom task description..."
+              class="flex-1 px-4 py-2.5 border border-slate-300 rounded bg-white text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+            />
+            <button
+              id="add-custom-task-btn"
+              class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-4 rounded shadow-sm transition duration-200 text-sm whitespace-nowrap"
+            >
+              + Add
+            </button>
+          </div>
+        </div>
+
+        <!-- Custom Tasks List -->
+        <div id="custom-tasks-container" class="mt-4 hidden">
+          <h4 class="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2">Custom Tasks:</h4>
+          <div id="custom-tasks-list" class="space-y-2">
+            <!-- Custom tasks will be dynamically added here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="bg-slate-50 px-6 py-4 rounded-b-lg border-t border-slate-200 flex justify-end">
+        <button id="done-modal-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded shadow-sm transition duration-200">
+          Done
+        </button>
+      </div>
     </div>
   </div>
+
+  <!-- Quick Add Modal -->
+  <div id="quick-add-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col">
+      <!-- Modal Header -->
+      <div class="bg-slate-800 text-white px-6 py-4 rounded-t-lg flex justify-between items-center border-b-4 border-blue-600">
+        <h2 class="text-lg font-semibold uppercase tracking-wide">
+          Quick Add Associates
+        </h2>
+        <button id="close-quick-add-btn" class="text-white hover:text-slate-300 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto flex-1">
+        <p class="text-sm text-slate-600 mb-4">Select associates to add to your team:</p>
+        <div id="quick-add-name-list" class="space-y-2">
+          <!-- Names will be dynamically added here -->
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="bg-slate-50 px-6 py-4 rounded-b-lg border-t border-slate-200 flex justify-end gap-3">
+        <button id="cancel-quick-add-btn" class="bg-slate-600 hover:bg-slate-700 text-white font-semibold py-2.5 px-6 rounded shadow-sm transition duration-200">
+          Cancel
+        </button>
+        <button id="confirm-quick-add-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded shadow-sm transition duration-200">
+          Add Selected
+        </button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -186,90 +213,6 @@
     // Redirect to login if no token
     if (!token) {
       window.location.href = '/';
-    }
-
-    // Mobile menu toggle functionality
-    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-    const mobileMenuClose = document.getElementById('mobile-menu-close');
-    const sidebar = document.getElementById('sidebar');
-    const mobileOverlay = document.getElementById('mobile-overlay');
-
-    function isMobileMenuOpen() {
-      return sidebar.classList.contains('translate-x-0') && !sidebar.classList.contains('-translate-x-full');
-    }
-
-    function openMobileMenu() {
-      console.log('Opening mobile menu');
-
-      // Show overlay first
-      mobileOverlay.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-
-      // Force browser to recognize the starting state
-      sidebar.offsetHeight; // Trigger reflow
-
-      // Remove ALL transform classes that could conflict
-      sidebar.classList.remove('-translate-x-full');
-      // Force add the open state
-      sidebar.classList.add('translate-x-0');
-
-      console.log('Sidebar classes after open:', sidebar.className);
-      console.log('Computed transform:', window.getComputedStyle(sidebar).transform);
-    }
-
-    function closeMobileMenu() {
-      console.log('Closing mobile menu');
-
-      // Force browser to recognize the starting state
-      sidebar.offsetHeight; // Trigger reflow
-
-      // Remove the open state
-      sidebar.classList.remove('translate-x-0');
-      // Force add the closed state
-      sidebar.classList.add('-translate-x-full');
-
-      // Hide overlay
-      mobileOverlay.classList.add('hidden');
-      document.body.style.overflow = '';
-
-      console.log('Sidebar classes after close:', sidebar.className);
-      console.log('Computed transform:', window.getComputedStyle(sidebar).transform);
-    }
-
-    function toggleMobileMenu() {
-      if (isMobileMenuOpen()) {
-        closeMobileMenu();
-      } else {
-        openMobileMenu();
-      }
-    }
-
-    // Hamburger menu toggles open/close
-    if (mobileMenuToggle) {
-      mobileMenuToggle.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('Hamburger clicked, menu is open:', isMobileMenuOpen());
-        toggleMobileMenu();
-      });
-    }
-
-    // X button closes menu
-    if (mobileMenuClose) {
-      mobileMenuClose.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('Close button clicked');
-        closeMobileMenu();
-      });
-    }
-
-    // Clicking overlay closes menu
-    if (mobileOverlay) {
-      mobileOverlay.addEventListener('click', function(e) {
-        console.log('Overlay clicked');
-        closeMobileMenu();
-      });
     }
 
     // Helper function to make authenticated API requests
@@ -293,7 +236,42 @@
     }
 
     // Logout functionality
-    document.getElementById('logout-button').addEventListener('click', () => {
+    document.getElementById('logout-button').addEventListener('click', async () => {
+      // Ask if they want to clear the table before signing out
+      if (associates.length > 0) {
+        const shouldClear = confirm('Would you like to clear the table before signing out?\n\nClick OK to clear the table, or Cancel to sign out without clearing.');
+
+        if (shouldClear) {
+          // Clear the table
+          let successCount = 0;
+          let failCount = 0;
+
+          // Delete each associate from the database
+          for (const associate of [...associates]) {
+            try {
+              const response = await authenticatedFetch(`/api/associates/${associate.id}`, {
+                method: 'DELETE'
+              });
+
+              if (response.ok) {
+                successCount++;
+              } else {
+                failCount++;
+              }
+            } catch (error) {
+              console.error(`Failed to remove ${associate.name}:`, error);
+              failCount++;
+            }
+          }
+
+          // Show result if there were any failures
+          if (failCount > 0) {
+            alert(`Cleared ${successCount} associate(s), but ${failCount} failed to remove.`);
+          }
+        }
+      }
+
+      // Sign out
       localStorage.removeItem('access_token');
       sessionStorage.removeItem('access_token');
       window.location.href = '/';
@@ -315,18 +293,54 @@
       "Bikes, Crafts, Batteries, and Furniture."
     ];
 
+    // Required tasks that must be assigned to at least one person
+    // Task indices: 1, 2, 3, 4, 5, 6, 7, 12 (0-indexed: 0, 1, 2, 3, 4, 5, 6, 11)
+    const requiredTaskIndices = [0, 1, 2, 3, 4, 5, 6, 11];
+
+    // Predefined names for Quick Add
+    const predefinedNames = [
+      "Lawrence",
+      "Jay",
+      "Heather",
+      "Chris",
+      "Jeff",
+      "Julia",
+      "Ronnie",
+      "Tawnya",
+      "Dalton"
+    ];
+
     // Associates management
     let associates = []; // Array of { id, name } objects from database
-    let assignedTasks = {}; // { associateName: [taskIndexes] }
+    let assignedTasks = {}; // { associateName: [{type: 'predefined', value: index} or {type: 'custom', value: 'task text', id: uniqueId}] }
 
-    const associatesSelect = document.getElementById('associates-select');
     const associateInput = document.getElementById('associate-input');
     const addBtn = document.getElementById('add-associate-btn');
-    const removeBtn = document.getElementById('remove-associate-btn');
-    const taskAssignmentSection = document.getElementById('task-assignment-section');
-    const selectedAssociateName = document.getElementById('selected-associate-name');
-    const taskListContainer = document.getElementById('task-list');
     const assignmentsOverview = document.getElementById('assignments-overview');
+
+    // Task Modal elements
+    const taskModal = document.getElementById('task-modal');
+    const modalAssociateName = document.getElementById('modal-associate-name');
+    const modalTaskListContainer = document.getElementById('modal-task-list');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const doneModalBtn = document.getElementById('done-modal-btn');
+
+    // Custom task elements
+    const customTaskInput = document.getElementById('custom-task-input');
+    const addCustomTaskBtn = document.getElementById('add-custom-task-btn');
+    const customTasksContainer = document.getElementById('custom-tasks-container');
+    const customTasksList = document.getElementById('custom-tasks-list');
+
+    let currentModalAssociateIndex = null;
+    let customTaskIdCounter = 0;
+
+    // Quick Add Modal elements
+    const quickAddModal = document.getElementById('quick-add-modal');
+    const quickAddBtn = document.getElementById('quick-add-btn');
+    const quickAddNameList = document.getElementById('quick-add-name-list');
+    const closeQuickAddBtn = document.getElementById('close-quick-add-btn');
+    const cancelQuickAddBtn = document.getElementById('cancel-quick-add-btn');
+    const confirmQuickAddBtn = document.getElementById('confirm-quick-add-btn');
 
     // Load associates from database
     async function loadAssociates() {
@@ -337,7 +351,6 @@
         associates.forEach(associate => {
           assignedTasks[associate.name] = [];
         });
-        updateDropdown();
         updateAssignmentsOverview();
       } catch (error) {
         console.error('Failed to load associates:', error);
@@ -347,23 +360,93 @@
       }
     }
 
-    // Handle task checkbox changes
-    function handleTaskCheckboxChange(checkbox) {
-      const selectedIndex = associatesSelect.value;
-      if (selectedIndex === '') return;
+    // Modal Functions
+    function openTaskModal(associateIndex) {
+      currentModalAssociateIndex = associateIndex;
+      const associate = associates[associateIndex];
 
-      const associate = associates[selectedIndex];
+      // Set modal title
+      modalAssociateName.textContent = associate.name;
+
+      // Initialize task list in modal
+      initializeModalTaskList(associateIndex);
+
+      // Show modal
+      taskModal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeTaskModal() {
+      taskModal.classList.add('hidden');
+      document.body.style.overflow = '';
+      currentModalAssociateIndex = null;
+    }
+
+    function initializeModalTaskList(associateIndex) {
+      const associate = associates[associateIndex];
+      const currentTasks = assignedTasks[associate.name] || [];
+
+      modalTaskListContainer.innerHTML = '';
+
+      availableTasks.forEach((task, index) => {
+        const taskDiv = document.createElement('div');
+        taskDiv.className = 'flex items-center p-3.5 bg-slate-50 border border-slate-200 rounded hover:bg-blue-50 hover:border-blue-300 transition cursor-pointer active:bg-blue-100';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `modal-task-${index}`;
+        checkbox.value = index;
+        // Check if this predefined task is assigned
+        checkbox.checked = currentTasks.some(t => t.type === 'predefined' && t.value === index);
+        checkbox.className = 'modal-task-checkbox w-6 h-6 text-blue-600 border-slate-300 rounded focus:ring-blue-500 focus:ring-2 flex-shrink-0 cursor-pointer';
+
+        const label = document.createElement('label');
+        label.htmlFor = `modal-task-${index}`;
+        label.className = 'ml-3 text-sm text-slate-700 cursor-pointer flex-1 select-none font-medium';
+        label.textContent = `${index + 1}. ${task}`;
+
+        // Make the entire row clickable
+        taskDiv.addEventListener('click', function(e) {
+          if (e.target !== checkbox) {
+            checkbox.checked = !checkbox.checked;
+            handleModalTaskCheckboxChange(checkbox);
+          }
+        });
+
+        checkbox.addEventListener('change', function() {
+          handleModalTaskCheckboxChange(this);
+        });
+
+        taskDiv.appendChild(checkbox);
+        taskDiv.appendChild(label);
+        modalTaskListContainer.appendChild(taskDiv);
+      });
+
+      // Display existing custom tasks
+      displayCustomTasks(associateIndex);
+
+      // Clear custom task input
+      customTaskInput.value = '';
+    }
+
+    function handleModalTaskCheckboxChange(checkbox) {
+      if (currentModalAssociateIndex === null) return;
+
+      const associate = associates[currentModalAssociateIndex];
       const taskIndex = parseInt(checkbox.value);
 
       if (checkbox.checked) {
-        // Add task if not already in the list
-        if (!assignedTasks[associate.name].includes(taskIndex)) {
-          assignedTasks[associate.name].push(taskIndex);
+        // Add predefined task
+        const taskExists = assignedTasks[associate.name].some(
+          t => t.type === 'predefined' && t.value === taskIndex
+        );
+        if (!taskExists) {
+          assignedTasks[associate.name].push({ type: 'predefined', value: taskIndex });
         }
       } else {
-        // Remove task from the list
+        // Remove predefined task
         assignedTasks[associate.name] = assignedTasks[associate.name].filter(
-          t => t !== taskIndex
+          t => !(t.type === 'predefined' && t.value === taskIndex)
         );
       }
 
@@ -371,56 +454,262 @@
       updateAssignmentsOverview();
     }
 
-    // Initialize task list
-    function initializeTaskList() {
-      taskListContainer.innerHTML = '';
-      availableTasks.forEach((task, index) => {
-        const taskDiv = document.createElement('div');
-        taskDiv.className = 'flex items-center p-3 sm:p-3.5 bg-slate-50 border border-slate-200 rounded hover:bg-blue-50 hover:border-blue-300 transition cursor-pointer active:bg-blue-100';
+    function displayCustomTasks(associateIndex) {
+      const associate = associates[associateIndex];
+      const currentTasks = assignedTasks[associate.name] || [];
+      const customTasks = currentTasks.filter(t => t.type === 'custom');
+
+      customTasksList.innerHTML = '';
+
+      if (customTasks.length > 0) {
+        customTasksContainer.classList.remove('hidden');
+
+        customTasks.forEach(task => {
+          const taskDiv = document.createElement('div');
+          taskDiv.className = 'flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded';
+
+          const taskText = document.createElement('span');
+          taskText.className = 'text-sm text-slate-700 font-medium';
+          taskText.textContent = task.value;
+
+          const removeBtn = document.createElement('button');
+          removeBtn.className = 'text-red-600 hover:text-red-800 font-semibold text-sm ml-2';
+          removeBtn.textContent = '✕ Remove';
+          removeBtn.onclick = () => removeCustomTask(task.id);
+
+          taskDiv.appendChild(taskText);
+          taskDiv.appendChild(removeBtn);
+          customTasksList.appendChild(taskDiv);
+        });
+      } else {
+        customTasksContainer.classList.add('hidden');
+      }
+    }
+
+    function addCustomTask() {
+      if (currentModalAssociateIndex === null) return;
+
+      const customTaskText = customTaskInput.value.trim();
+      if (!customTaskText) {
+        alert('Please enter a task description.');
+        return;
+      }
+
+      const associate = associates[currentModalAssociateIndex];
+      const taskId = `custom-${customTaskIdCounter++}`;
+
+      assignedTasks[associate.name].push({
+        type: 'custom',
+        value: customTaskText,
+        id: taskId
+      });
+
+      // Update display
+      displayCustomTasks(currentModalAssociateIndex);
+      updateAssignmentsOverview();
+
+      // Clear input
+      customTaskInput.value = '';
+    }
+
+    function removeCustomTask(taskId) {
+      if (currentModalAssociateIndex === null) return;
+
+      const associate = associates[currentModalAssociateIndex];
+      assignedTasks[associate.name] = assignedTasks[associate.name].filter(
+        t => !(t.type === 'custom' && t.id === taskId)
+      );
+
+      // Update display
+      displayCustomTasks(currentModalAssociateIndex);
+      updateAssignmentsOverview();
+    }
+
+    // Custom task event listeners
+    addCustomTaskBtn.addEventListener('click', addCustomTask);
+    customTaskInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        addCustomTask();
+      }
+    });
+
+    // Modal event listeners
+    closeModalBtn.addEventListener('click', closeTaskModal);
+    doneModalBtn.addEventListener('click', closeTaskModal);
+
+    // Close modal when clicking outside
+    taskModal.addEventListener('click', function(e) {
+      if (e.target === taskModal) {
+        closeTaskModal();
+      }
+    });
+
+    // Quick Add Functions
+    function openQuickAddModal() {
+      // Initialize the name list with checkboxes
+      initializeQuickAddNameList();
+
+      // Show modal
+      quickAddModal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeQuickAddModal() {
+      quickAddModal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    function initializeQuickAddNameList() {
+      quickAddNameList.innerHTML = '';
+
+      // Get list of already added associate names
+      const existingNames = associates.map(a => a.name.toLowerCase());
+
+      predefinedNames.forEach((name, index) => {
+        const nameDiv = document.createElement('div');
+        const isAlreadyAdded = existingNames.includes(name.toLowerCase());
+
+        nameDiv.className = `flex items-center p-3.5 ${isAlreadyAdded ? 'bg-slate-100 opacity-50' : 'bg-slate-50 border border-slate-200 rounded hover:bg-blue-50 hover:border-blue-300 cursor-pointer active:bg-blue-100'} transition`;
 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
-        checkbox.id = `task-${index}`;
-        checkbox.value = index;
-        checkbox.className = 'task-checkbox w-6 h-6 text-blue-600 border-slate-300 rounded focus:ring-blue-500 focus:ring-2 flex-shrink-0 cursor-pointer';
+        checkbox.id = `quick-add-name-${index}`;
+        checkbox.value = name;
+        checkbox.disabled = isAlreadyAdded;
+        checkbox.className = 'quick-add-checkbox w-6 h-6 text-blue-600 border-slate-300 rounded focus:ring-blue-500 focus:ring-2 flex-shrink-0 cursor-pointer';
 
         const label = document.createElement('label');
-        label.htmlFor = `task-${index}`;
-        label.className = 'ml-3 text-sm text-slate-700 cursor-pointer flex-1 select-none font-medium';
-        label.textContent = `${index + 1}. ${task}`;
+        label.htmlFor = `quick-add-name-${index}`;
+        label.className = `ml-3 text-sm ${isAlreadyAdded ? 'text-slate-400 line-through' : 'text-slate-700'} cursor-pointer flex-1 select-none font-medium`;
+        label.textContent = isAlreadyAdded ? `${name} (Already Added)` : name;
 
-        // Make the entire row clickable
-        taskDiv.addEventListener('click', function(e) {
-          // Only toggle if we didn't click directly on the checkbox
-          if (e.target !== checkbox) {
-            checkbox.checked = !checkbox.checked;
-            handleTaskCheckboxChange(checkbox);
+        if (!isAlreadyAdded) {
+          // Make the entire row clickable
+          nameDiv.addEventListener('click', function(e) {
+            if (e.target !== checkbox) {
+              checkbox.checked = !checkbox.checked;
+            }
+          });
+        }
+
+        nameDiv.appendChild(checkbox);
+        nameDiv.appendChild(label);
+        quickAddNameList.appendChild(nameDiv);
+      });
+    }
+
+    async function confirmQuickAdd() {
+      const selectedCheckboxes = document.querySelectorAll('.quick-add-checkbox:checked');
+      const namesToAdd = Array.from(selectedCheckboxes).map(cb => cb.value);
+
+      if (namesToAdd.length === 0) {
+        alert('Please select at least one associate to add.');
+        return;
+      }
+
+      // Add each selected name to the database
+      let successCount = 0;
+      let failCount = 0;
+
+      for (const name of namesToAdd) {
+        try {
+          const response = await authenticatedFetch('/api/associates', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+          });
+
+          if (response.ok) {
+            const newAssociate = await response.json();
+            associates.push(newAssociate);
+            assignedTasks[newAssociate.name] = [];
+            successCount++;
+          } else {
+            failCount++;
           }
-        });
+        } catch (error) {
+          console.error(`Failed to add ${name}:`, error);
+          failCount++;
+        }
+      }
 
-        // Add change event listener for real-time updates
-        checkbox.addEventListener('change', function() {
-          handleTaskCheckboxChange(this);
-        });
+      // Update the table
+      updateAssignmentsOverview();
 
-        taskDiv.appendChild(checkbox);
-        taskDiv.appendChild(label);
-        taskListContainer.appendChild(taskDiv);
-      });
+      // Close the modal
+      closeQuickAddModal();
+
+      // Show result
+      if (successCount > 0) {
+        alert(`Successfully added ${successCount} associate(s)${failCount > 0 ? `, ${failCount} failed` : ''}.`);
+      } else {
+        alert('Failed to add associates. Please try again.');
+      }
     }
 
-    // Update task checkboxes based on current associate's assignments
-    function updateTaskCheckboxes() {
-      const selectedIndex = associatesSelect.value;
-      if (selectedIndex === '') return;
+    // Quick Add event listeners
+    quickAddBtn.addEventListener('click', openQuickAddModal);
+    closeQuickAddBtn.addEventListener('click', closeQuickAddModal);
+    cancelQuickAddBtn.addEventListener('click', closeQuickAddModal);
+    confirmQuickAddBtn.addEventListener('click', confirmQuickAdd);
 
-      const associate = associates[selectedIndex];
-      const currentTasks = assignedTasks[associate.name] || [];
+    // Close modal when clicking outside
+    quickAddModal.addEventListener('click', function(e) {
+      if (e.target === quickAddModal) {
+        closeQuickAddModal();
+      }
+    });
 
-      document.querySelectorAll('.task-checkbox').forEach((checkbox) => {
-        checkbox.checked = currentTasks.includes(parseInt(checkbox.value));
-      });
+    // Clear Table Functionality
+    const clearTableBtn = document.getElementById('clear-table-btn');
+
+    async function clearTable() {
+      if (associates.length === 0) {
+        alert('Table is already empty.');
+        return;
+      }
+
+      if (!confirm(`Are you sure you want to remove all ${associates.length} associate(s) from the table? This action cannot be undone.`)) {
+        return;
+      }
+
+      let successCount = 0;
+      let failCount = 0;
+
+      // Delete each associate from the database
+      for (const associate of [...associates]) {
+        try {
+          const response = await authenticatedFetch(`/api/associates/${associate.id}`, {
+            method: 'DELETE'
+          });
+
+          if (response.ok) {
+            successCount++;
+          } else {
+            failCount++;
+          }
+        } catch (error) {
+          console.error(`Failed to remove ${associate.name}:`, error);
+          failCount++;
+        }
+      }
+
+      // Clear local arrays
+      associates = [];
+      assignedTasks = {};
+
+      // Update the table
+      updateAssignmentsOverview();
+
+      // Show result
+      if (successCount > 0) {
+        alert(`Successfully removed ${successCount} associate(s)${failCount > 0 ? `, ${failCount} failed` : ''}.`);
+      } else {
+        alert('Failed to clear table. Please try again.');
+      }
     }
+
+    clearTableBtn.addEventListener('click', clearTable);
 
     // Update assignments overview display
     function updateAssignmentsOverview() {
@@ -436,19 +725,28 @@
               <th class="px-2.5 sm:px-6 py-2.5 sm:py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider bg-slate-100 border-r border-slate-200">
                 Associate Name
               </th>
-              <th class="px-2.5 sm:px-6 py-2.5 sm:py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider bg-slate-100">
-                Assigned Tasks
+              <th class="px-2.5 sm:px-6 py-2.5 sm:py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider bg-slate-100 border-r border-slate-200">
+                Assigned Tasks (Click to Edit)
+              </th>
+              <th class="px-2.5 sm:px-6 py-2.5 sm:py-4 text-center text-xs font-bold text-slate-700 uppercase tracking-wider bg-slate-100 w-24 sm:w-32">
+                Actions
               </th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-200">
       `;
 
-      associates.forEach(associate => {
+      associates.forEach((associate, index) => {
         const tasks = assignedTasks[associate.name] || [];
         const tasksList = tasks.length > 0
           ? `<ul class="list-disc list-inside text-slate-700 space-y-1 sm:space-y-1.5">
-              ${tasks.map(taskIndex => `<li class="text-xs sm:text-sm">${availableTasks[taskIndex]}</li>`).join('')}
+              ${tasks.map(task => {
+                if (task.type === 'predefined') {
+                  return `<li class="text-xs sm:text-sm">${availableTasks[task.value]}</li>`;
+                } else {
+                  return `<li class="text-xs sm:text-sm"><span class="text-green-700 font-semibold">Custom:</span> ${task.value}</li>`;
+                }
+              }).join('')}
             </ul>`
           : '<span class="text-slate-400 italic text-xs sm:text-sm">No tasks assigned</span>';
 
@@ -457,8 +755,17 @@
             <td class="px-2.5 sm:px-6 py-2.5 sm:py-4 text-xs sm:text-sm font-semibold text-slate-800 border-r border-slate-200 bg-slate-50">
               ${associate.name}
             </td>
-            <td class="px-2.5 sm:px-6 py-2.5 sm:py-4 text-xs sm:text-sm text-slate-700">
+            <td class="px-2.5 sm:px-6 py-2.5 sm:py-4 text-xs sm:text-sm text-slate-700 cursor-pointer hover:bg-blue-50 transition border-r border-slate-200" data-associate-index="${index}" onclick="openTaskModal(${index})">
               ${tasksList}
+            </td>
+            <td class="px-2.5 sm:px-6 py-2.5 sm:py-4 text-center">
+              <button
+                onclick="removeAssociate(${index})"
+                class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-3 sm:px-4 rounded shadow-sm transition duration-200 text-xs sm:text-sm"
+                title="Remove ${associate.name}"
+              >
+                Remove
+              </button>
             </td>
           </tr>
         `;
@@ -470,17 +777,6 @@
       `;
 
       assignmentsOverview.innerHTML = tableHTML;
-    }
-
-    // Update dropdown with current associates
-    function updateDropdown() {
-      associatesSelect.innerHTML = '<option value="">-- Select an Associate --</option>';
-      associates.forEach((associate, index) => {
-        const option = document.createElement('option');
-        option.value = index;
-        option.textContent = associate.name;
-        associatesSelect.appendChild(option);
-      });
     }
 
     // Add associate
@@ -513,18 +809,8 @@
         const newAssociate = await response.json();
         associates.push(newAssociate);
         assignedTasks[newAssociate.name] = [];
-        updateDropdown();
         associateInput.value = '';
         updateAssignmentsOverview();
-
-        // Auto-select the newly added associate
-        const newIndex = associates.length - 1;
-        associatesSelect.value = newIndex;
-
-        // Trigger the change event to show task assignment section
-        selectedAssociateName.textContent = newAssociate.name;
-        taskAssignmentSection.classList.remove('hidden');
-        updateTaskCheckboxes();
       } catch (error) {
         console.error('Failed to add associate:', error);
         alert('Failed to add associate to database');
@@ -532,14 +818,12 @@
     });
 
     // Remove associate
-    removeBtn.addEventListener('click', async () => {
-      const selectedIndex = associatesSelect.value;
-      if (selectedIndex === '') {
-        alert('Please select an associate to remove!');
+    async function removeAssociate(index) {
+      const associate = associates[index];
+
+      if (!confirm(`Are you sure you want to remove ${associate.name}?`)) {
         return;
       }
-
-      const associate = associates[selectedIndex];
 
       try {
         const response = await authenticatedFetch(`/api/associates/${associate.id}`, {
@@ -552,30 +836,14 @@
         }
 
         // Remove from local array
-        associates.splice(selectedIndex, 1);
+        associates.splice(index, 1);
         delete assignedTasks[associate.name];
-        updateDropdown();
-        taskAssignmentSection.classList.add('hidden');
         updateAssignmentsOverview();
-        alert(`Removed: ${associate.name}`);
       } catch (error) {
         console.error('Failed to remove associate:', error);
         alert('Failed to remove associate from database');
       }
-    });
-
-    // When associate is selected, show task assignment section
-    associatesSelect.addEventListener('change', () => {
-      const selectedIndex = associatesSelect.value;
-      if (selectedIndex !== '') {
-        const associate = associates[selectedIndex];
-        selectedAssociateName.textContent = associate.name;
-        taskAssignmentSection.classList.remove('hidden');
-        updateTaskCheckboxes();
-      } else {
-        taskAssignmentSection.classList.add('hidden');
-      }
-    });
+    }
 
     // Allow Enter key to add associate
     associateInput.addEventListener('keypress', (e) => {
@@ -584,8 +852,7 @@
       }
     });
 
-    // Initialize task list and load associates from database on page load
-    initializeTaskList();
+    // Load associates from database on page load
     loadAssociates();
 
     // Text view functionality
@@ -606,8 +873,12 @@
         text += `${associate.name}:\n`;
 
         if (tasks.length > 0) {
-          tasks.forEach(taskIndex => {
-            text += `  - ${availableTasks[taskIndex]}\n`;
+          tasks.forEach(task => {
+            if (task.type === 'predefined') {
+              text += `  - ${availableTasks[task.value]}\n`;
+            } else {
+              text += `  - [Custom] ${task.value}\n`;
+            }
           });
         } else {
           text += `  (No tasks assigned)\n`;
@@ -618,7 +889,39 @@
       return text.trim();
     }
 
+    function checkUnassignedRequiredTasks() {
+      // Collect all assigned predefined task indices across all associates
+      const allAssignedTasks = new Set();
+      Object.values(assignedTasks).forEach(tasks => {
+        tasks.forEach(task => {
+          if (task.type === 'predefined') {
+            allAssignedTasks.add(task.value);
+          }
+        });
+      });
+
+      // Find which required tasks are not assigned
+      const unassignedRequired = requiredTaskIndices.filter(
+        taskIndex => !allAssignedTasks.has(taskIndex)
+      );
+
+      return unassignedRequired;
+    }
+
     viewTextBtn.addEventListener('click', () => {
+      // Check for unassigned required tasks
+      const unassigned = checkUnassignedRequiredTasks();
+
+      if (unassigned.length > 0) {
+        const unassignedTaskNames = unassigned.map(
+          index => `  - Task ${index + 1}: ${availableTasks[index]}`
+        ).join('\n');
+
+        const warningMessage = `WARNING: The following required tasks are not assigned to anyone:\n\n${unassignedTaskNames}\n\nThese tasks must be assigned to at least one person.`;
+
+        alert(warningMessage);
+      }
+
       textOutput.value = generateTextFormat();
       textViewSection.classList.remove('hidden');
     });
