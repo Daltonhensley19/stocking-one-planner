@@ -38,10 +38,37 @@
           </div>
           <button
             id="view-text-btn"
-            class="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 sm:py-2.5 px-4 sm:px-6 rounded shadow-sm transition duration-200 text-sm sm:text-base w-full sm:w-auto"
+            class="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 sm:py-2.5 px-4 sm:px-6 rounded shadow-sm transition duration-200 text-sm sm:text-base w-full sm:w-auto min-h-[48px]"
           >
             View as Text
           </button>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div id="progress-container" class="mb-4 sm:mb-6 bg-white rounded-lg shadow border border-slate-200 p-4 sm:p-6">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
+            <div>
+              <h3 class="text-sm sm:text-base font-bold text-slate-800 uppercase tracking-wide">Task Coverage</h3>
+              <p class="text-xs text-slate-600 mt-1">Required tasks must be assigned to at least one associate</p>
+            </div>
+            <div id="progress-badge" class="px-4 py-2 rounded-full font-semibold text-sm">
+              <span id="progress-text">0 of 8 Required</span>
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="w-full bg-slate-200 rounded-full h-3 sm:h-4 overflow-hidden">
+            <div
+              id="progress-bar"
+              class="h-full transition-all duration-500 ease-out rounded-full"
+              style="width: 0%"
+            ></div>
+          </div>
+
+          <!-- Task Status Grid -->
+          <div id="task-status-grid" class="mt-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+            <!-- Task badges will be inserted here -->
+          </div>
         </div>
 
         <!-- Text View Section (hidden by default) -->
@@ -80,7 +107,7 @@
             />
             <button
               id="add-associate-btn"
-              class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded shadow-sm transition duration-200 whitespace-nowrap"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded shadow-sm transition duration-200 whitespace-nowrap min-h-[48px]"
             >
               + Add Associate
             </button>
@@ -94,13 +121,13 @@
             <div class="flex gap-2 sm:gap-3">
               <button
                 id="quick-add-btn"
-                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 sm:px-4 rounded shadow-sm transition duration-200 text-xs sm:text-sm"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 sm:px-5 rounded shadow-sm transition duration-200 text-xs sm:text-sm min-h-[48px]"
               >
                 Quick Add
               </button>
               <button
                 id="clear-table-btn"
-                class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-3 sm:px-4 rounded shadow-sm transition duration-200 text-xs sm:text-sm"
+                class="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 sm:px-5 rounded shadow-sm transition duration-200 text-xs sm:text-sm min-h-[48px]"
               >
                 Clear Table
               </button>
@@ -114,10 +141,12 @@
   </div>
 
   <!-- Task Assignment Modal -->
-  <div id="task-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col">
+  <div id="task-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-lg shadow-2xl w-full sm:max-w-2xl max-h-[85vh] sm:max-h-[90vh] flex flex-col modal-bottom-sheet">
       <!-- Modal Header -->
-      <div class="bg-slate-800 text-white px-6 py-4 rounded-t-lg flex justify-between items-center border-b-4 border-blue-600">
+      <div class="bg-slate-800 text-white px-6 py-5 sm:py-4 rounded-t-3xl sm:rounded-t-lg flex justify-between items-center border-b-4 border-blue-600 relative">
+        <!-- Drag Handle for Mobile -->
+        <div class="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1.5 bg-slate-600 rounded-full sm:hidden"></div>
         <h2 class="text-lg font-semibold uppercase tracking-wide">
           Assign Tasks to: <span id="modal-associate-name" class="text-blue-400 font-bold"></span>
         </h2>
@@ -146,7 +175,7 @@
             />
             <button
               id="add-custom-task-btn"
-              class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-4 rounded shadow-sm transition duration-200 text-sm whitespace-nowrap"
+              class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-5 rounded shadow-sm transition duration-200 text-sm whitespace-nowrap min-h-[48px]"
             >
               + Add
             </button>
@@ -163,8 +192,8 @@
       </div>
 
       <!-- Modal Footer -->
-      <div class="bg-slate-50 px-6 py-4 rounded-b-lg border-t border-slate-200 flex justify-end">
-        <button id="done-modal-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded shadow-sm transition duration-200">
+      <div class="bg-slate-50 px-6 py-4 sm:py-4 rounded-b-lg border-t border-slate-200 flex justify-end">
+        <button id="done-modal-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded shadow-sm transition duration-200 min-h-[48px]">
           Done
         </button>
       </div>
@@ -172,10 +201,12 @@
   </div>
 
   <!-- Quick Add Modal -->
-  <div id="quick-add-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col">
+  <div id="quick-add-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-lg shadow-2xl w-full sm:max-w-2xl max-h-[85vh] sm:max-h-[90vh] flex flex-col modal-bottom-sheet">
       <!-- Modal Header -->
-      <div class="bg-slate-800 text-white px-6 py-4 rounded-t-lg flex justify-between items-center border-b-4 border-blue-600">
+      <div class="bg-slate-800 text-white px-6 py-5 sm:py-4 rounded-t-3xl sm:rounded-t-lg flex justify-between items-center border-b-4 border-blue-600 relative">
+        <!-- Drag Handle for Mobile -->
+        <div class="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1.5 bg-slate-600 rounded-full sm:hidden"></div>
         <h2 class="text-lg font-semibold uppercase tracking-wide">
           Quick Add Associates
         </h2>
@@ -196,10 +227,10 @@
 
       <!-- Modal Footer -->
       <div class="bg-slate-50 px-6 py-4 rounded-b-lg border-t border-slate-200 flex justify-end gap-3">
-        <button id="cancel-quick-add-btn" class="bg-slate-600 hover:bg-slate-700 text-white font-semibold py-2.5 px-6 rounded shadow-sm transition duration-200">
+        <button id="cancel-quick-add-btn" class="bg-slate-600 hover:bg-slate-700 text-white font-semibold py-3 px-6 rounded shadow-sm transition duration-200 min-h-[48px]">
           Cancel
         </button>
-        <button id="confirm-quick-add-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded shadow-sm transition duration-200">
+        <button id="confirm-quick-add-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded shadow-sm transition duration-200 min-h-[48px]">
           Add Selected
         </button>
       </div>
@@ -212,6 +243,58 @@
   </div>
 
   <style>
+    /* Bottom Sheet Modal Animations */
+    .modal-bottom-sheet {
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-closing {
+      animation: slideDown 0.25s ease-in forwards;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+    }
+
+    /* On desktop, fade in instead of slide */
+    @media (min-width: 640px) {
+      .modal-bottom-sheet {
+        animation: fadeIn 0.2s ease-out;
+      }
+
+      .modal-closing {
+        animation: fadeOut 0.2s ease-in forwards;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+      }
+
+      @keyframes fadeOut {
+        from { opacity: 1; transform: scale(1); }
+        to { opacity: 0; transform: scale(0.95); }
+      }
+    }
+
     /* Toast notification styles */
     .toast {
       pointer-events: auto;
@@ -329,8 +412,45 @@
       return response;
     }
 
+    // Haptic Feedback System
+    function triggerHaptic(type = 'light') {
+      // Check if the Vibration API is supported
+      if ('vibrate' in navigator) {
+        switch(type) {
+          case 'light':
+            // Light tap for selections, checkbox toggles
+            navigator.vibrate(10);
+            break;
+          case 'medium':
+            // Medium tap for button clicks, adds
+            navigator.vibrate(20);
+            break;
+          case 'success':
+            // Success pattern for completed actions
+            navigator.vibrate([10, 50, 10]);
+            break;
+          case 'error':
+            // Error pattern for failures
+            navigator.vibrate([20, 100, 20, 100, 20]);
+            break;
+          case 'warning':
+            // Warning pattern
+            navigator.vibrate([15, 50, 15]);
+            break;
+        }
+      }
+    }
+
     // Toast Notification System
     function showToast(message, type = 'info', duration = 4000) {
+      // Trigger haptic feedback based on toast type
+      if (type === 'success') {
+        triggerHaptic('success');
+      } else if (type === 'error') {
+        triggerHaptic('error');
+      } else if (type === 'warning') {
+        triggerHaptic('warning');
+      }
       const toastContainer = document.getElementById('toast-container');
 
       // Create toast element
@@ -452,12 +572,30 @@
       "Trailers.",
       "Scan early.",
       "Top Stock.",
-      "Bikes, Crafts, Batteries, and Furniture."
+      "Bikes, Crafts, Batteries, and Furniture.",
+      "HBA and OTC."
+    ];
+
+    // Abbreviated task names for display in badges
+    const taskAbbreviations = [
+      "Paper, Pets, Chem",
+      "New Mod",
+      "Rollies",
+      "Auto & Sporting",
+      "Housewares",
+      "Infants",
+      "Grocery & 95",
+      "Topsteel",
+      "Trailers",
+      "Scan Early",
+      "Top Stock",
+      "Bikes, Crafts, etc",
+      "HBA & OTC"
     ];
 
     // Required tasks that must be assigned to at least one person
-    // Task indices: 1, 2, 3, 4, 5, 6, 7, 12 (0-indexed: 0, 1, 2, 3, 4, 5, 6, 11)
-    const requiredTaskIndices = [0, 1, 2, 3, 4, 5, 6, 11];
+    // Task indices: 1, 2, 3, 4, 5, 6, 7, 12, 13 (0-indexed: 0, 1, 2, 3, 4, 5, 6, 11, 12)
+    const requiredTaskIndices = [0, 1, 2, 3, 4, 5, 6, 11, 12];
 
     // Predefined names for Quick Add
     const predefinedNames = [
@@ -526,6 +664,7 @@
 
     // Modal Functions
     function openTaskModal(associateIndex) {
+      triggerHaptic('medium');
       currentModalAssociateIndex = associateIndex;
       const associate = associates[associateIndex];
 
@@ -541,9 +680,15 @@
     }
 
     function closeTaskModal() {
-      taskModal.classList.add('hidden');
-      document.body.style.overflow = '';
-      currentModalAssociateIndex = null;
+      const modalContent = taskModal.querySelector('.modal-bottom-sheet');
+      modalContent.classList.add('modal-closing');
+
+      setTimeout(() => {
+        taskModal.classList.add('hidden');
+        modalContent.classList.remove('modal-closing');
+        document.body.style.overflow = '';
+        currentModalAssociateIndex = null;
+      }, 250);
     }
 
     function initializeModalTaskList(associateIndex) {
@@ -554,7 +699,7 @@
 
       availableTasks.forEach((task, index) => {
         const taskDiv = document.createElement('div');
-        taskDiv.className = 'flex items-center p-3.5 bg-slate-50 border border-slate-200 rounded hover:bg-blue-50 hover:border-blue-300 transition cursor-pointer active:bg-blue-100';
+        taskDiv.className = 'flex items-center p-4 sm:p-5 bg-slate-50 border border-slate-200 rounded hover:bg-blue-50 hover:border-blue-300 transition cursor-pointer active:bg-blue-100 min-h-[56px]';
 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
@@ -562,7 +707,7 @@
         checkbox.value = index;
         // Check if this predefined task is assigned
         checkbox.checked = currentTasks.some(t => t.type === 'predefined' && t.value === index);
-        checkbox.className = 'modal-task-checkbox w-6 h-6 text-blue-600 border-slate-300 rounded focus:ring-blue-500 focus:ring-2 flex-shrink-0 cursor-pointer';
+        checkbox.className = 'modal-task-checkbox w-7 h-7 sm:w-8 sm:h-8 text-blue-600 border-slate-300 rounded focus:ring-blue-500 focus:ring-2 flex-shrink-0 cursor-pointer';
 
         const label = document.createElement('label');
         label.htmlFor = `modal-task-${index}`;
@@ -595,6 +740,9 @@
 
     function handleModalTaskCheckboxChange(checkbox) {
       if (currentModalAssociateIndex === null) return;
+
+      // Haptic feedback for checkbox toggle
+      triggerHaptic('light');
 
       const associate = associates[currentModalAssociateIndex];
       const taskIndex = parseInt(checkbox.value);
@@ -710,6 +858,7 @@
 
     // Quick Add Functions
     function openQuickAddModal() {
+      triggerHaptic('medium');
       // Initialize the name list with checkboxes
       initializeQuickAddNameList();
 
@@ -719,8 +868,14 @@
     }
 
     function closeQuickAddModal() {
-      quickAddModal.classList.add('hidden');
-      document.body.style.overflow = '';
+      const modalContent = quickAddModal.querySelector('.modal-bottom-sheet');
+      modalContent.classList.add('modal-closing');
+
+      setTimeout(() => {
+        quickAddModal.classList.add('hidden');
+        modalContent.classList.remove('modal-closing');
+        document.body.style.overflow = '';
+      }, 250);
     }
 
     function initializeQuickAddNameList() {
@@ -733,14 +888,14 @@
         const nameDiv = document.createElement('div');
         const isAlreadyAdded = existingNames.includes(name.toLowerCase());
 
-        nameDiv.className = `flex items-center p-3.5 ${isAlreadyAdded ? 'bg-slate-100 opacity-50' : 'bg-slate-50 border border-slate-200 rounded hover:bg-blue-50 hover:border-blue-300 cursor-pointer active:bg-blue-100'} transition`;
+        nameDiv.className = `flex items-center p-4 sm:p-5 ${isAlreadyAdded ? 'bg-slate-100 opacity-50' : 'bg-slate-50 border border-slate-200 rounded hover:bg-blue-50 hover:border-blue-300 cursor-pointer active:bg-blue-100'} transition min-h-[56px]`;
 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.id = `quick-add-name-${index}`;
         checkbox.value = name;
         checkbox.disabled = isAlreadyAdded;
-        checkbox.className = 'quick-add-checkbox w-6 h-6 text-blue-600 border-slate-300 rounded focus:ring-blue-500 focus:ring-2 flex-shrink-0 cursor-pointer';
+        checkbox.className = 'quick-add-checkbox w-7 h-7 sm:w-8 sm:h-8 text-blue-600 border-slate-300 rounded focus:ring-blue-500 focus:ring-2 flex-shrink-0 cursor-pointer';
 
         const label = document.createElement('label');
         label.htmlFor = `quick-add-name-${index}`;
@@ -913,10 +1068,77 @@
 
     clearTableBtn.addEventListener('click', clearTable);
 
+    // Update progress indicator
+    function updateProgressIndicator() {
+      const progressContainer = document.getElementById('progress-container');
+      const progressBar = document.getElementById('progress-bar');
+      const progressText = document.getElementById('progress-text');
+      const progressBadge = document.getElementById('progress-badge');
+      const taskStatusGrid = document.getElementById('task-status-grid');
+
+      // Collect all assigned predefined task indices
+      const allAssignedTasks = new Set();
+      Object.values(assignedTasks).forEach(tasks => {
+        tasks.forEach(task => {
+          if (task.type === 'predefined') {
+            allAssignedTasks.add(task.value);
+          }
+        });
+      });
+
+      // Count how many required tasks are assigned
+      const assignedRequiredCount = requiredTaskIndices.filter(
+        taskIndex => allAssignedTasks.has(taskIndex)
+      ).length;
+
+      const totalRequired = requiredTaskIndices.length;
+      const percentage = (assignedRequiredCount / totalRequired) * 100;
+
+      // Update progress bar
+      progressBar.style.width = `${percentage}%`;
+
+      // Color coding
+      if (assignedRequiredCount === totalRequired) {
+        progressBar.className = 'h-full transition-all duration-500 ease-out rounded-full bg-green-500';
+        progressBadge.className = 'px-4 py-2 rounded-full font-semibold text-sm bg-green-100 text-green-800';
+      } else if (assignedRequiredCount >= totalRequired * 0.6) {
+        progressBar.className = 'h-full transition-all duration-500 ease-out rounded-full bg-yellow-500';
+        progressBadge.className = 'px-4 py-2 rounded-full font-semibold text-sm bg-yellow-100 text-yellow-800';
+      } else {
+        progressBar.className = 'h-full transition-all duration-500 ease-out rounded-full bg-red-500';
+        progressBadge.className = 'px-4 py-2 rounded-full font-semibold text-sm bg-red-100 text-red-800';
+      }
+
+      progressText.textContent = `${assignedRequiredCount} of ${totalRequired} Required`;
+
+      // Update task status grid
+      taskStatusGrid.innerHTML = '';
+      requiredTaskIndices.forEach(taskIndex => {
+        const isAssigned = allAssignedTasks.has(taskIndex);
+        const badge = document.createElement('div');
+        badge.className = `px-3 py-2 rounded text-xs font-semibold text-center ${
+          isAssigned
+            ? 'bg-green-100 text-green-800 border border-green-300'
+            : 'bg-red-100 text-red-800 border border-red-300'
+        }`;
+        badge.textContent = taskAbbreviations[taskIndex];
+        badge.title = availableTasks[taskIndex];
+        taskStatusGrid.appendChild(badge);
+      });
+
+      // Show/hide progress container based on whether there are associates
+      if (associates.length === 0) {
+        progressContainer.classList.add('hidden');
+      } else {
+        progressContainer.classList.remove('hidden');
+      }
+    }
+
     // Update assignments overview display
     function updateAssignmentsOverview() {
       if (associates.length === 0) {
         assignmentsOverview.innerHTML = '<p class="text-slate-500 italic text-sm">No associates added yet. Add an associate to get started.</p>';
+        updateProgressIndicator();
         return;
       }
 
@@ -979,6 +1201,7 @@
       `;
 
       assignmentsOverview.innerHTML = tableHTML;
+      updateProgressIndicator();
     }
 
     // Add associate
@@ -1167,6 +1390,7 @@
     copyTextBtn.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(textOutput.value);
+        triggerHaptic('success');
         const originalText = copyTextBtn.textContent;
         copyTextBtn.textContent = '✓ Copied!';
         copyTextBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
