@@ -20,12 +20,19 @@
         <p class="text-xs sm:text-sm text-slate-300">Workforce Management System</p>
       </div>
     </div>
-    <button
-      id="logout-button"
-      class="bg-slate-700 hover:bg-slate-600 text-white font-medium py-2.5 px-4 sm:px-6 rounded border border-slate-600 transition duration-200 text-sm sm:text-base"
-    >
-      Sign Out
-    </button>
+    <div class="flex items-center gap-2 sm:gap-4">
+      <!-- Online/Offline Indicator -->
+      <div id="connection-status" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-700 border border-slate-600">
+        <span id="status-dot" class="w-2.5 h-2.5 rounded-full bg-green-500"></span>
+        <span id="status-text" class="text-xs sm:text-sm text-white font-medium">Online</span>
+      </div>
+      <button
+        id="logout-button"
+        class="bg-slate-700 hover:bg-slate-600 text-white font-medium py-2.5 px-4 sm:px-6 rounded border border-slate-600 transition duration-200 text-sm sm:text-base"
+      >
+        Sign Out
+      </button>
+    </div>
   </div>
 
   <!-- Main Content Area -->
@@ -616,6 +623,11 @@
     let associates = []; // Array of { id, name } objects from database
     let assignedTasks = {}; // { associateName: [{type: 'predefined', value: index} or {type: 'custom', value: 'task text', id: uniqueId}] }
 
+    // Plan persistence
+    let currentPlanId = null;
+    let currentPlanDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+    let saveTimeout = null;
+
     const associateInput = document.getElementById('associate-input');
     const addBtn = document.getElementById('add-associate-btn');
     const assignmentsOverview = document.getElementById('assignments-overview');
@@ -653,6 +665,8 @@
         associates.forEach(associate => {
           assignedTasks[associate.name] = [];
         });
+        // Load today's plan after loading associates
+        await loadTodaysPlan();
         updateAssignmentsOverview();
       } catch (error) {
         console.error('Failed to load associates:', error);
@@ -660,6 +674,77 @@
           showToast('Failed to load associates from database', 'error');
         }
       }
+    }
+
+    // Plan persistence functions
+    async function loadTodaysPlan() {
+      try {
+        const response = await authenticatedFetch(`/api/plans/by-date?date=${currentPlanDate}`);
+        if (response.ok) {
+          const plan = await response.json();
+          if (plan) {
+            currentPlanId = plan.id;
+            assignedTasks = plan.assignments || {};
+            // Ensure all current associates have entries
+            associates.forEach(associate => {
+              if (!assignedTasks[associate.name]) {
+                assignedTasks[associate.name] = [];
+              }
+            });
+            updateAssignmentsOverview();
+            console.log('Loaded existing plan for today:', plan);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load today\'s plan:', error);
+        // Non-critical error - continue with empty plan
+      }
+    }
+
+    async function savePlan() {
+      try {
+        if (currentPlanId) {
+          // Update existing plan
+          const response = await authenticatedFetch(`/api/plans/${currentPlanId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              assignments: assignedTasks
+            })
+          });
+          if (response.ok) {
+            console.log('Plan saved successfully');
+          }
+        } else {
+          // Create new plan
+          const response = await authenticatedFetch('/api/plans', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              planDate: currentPlanDate,
+              assignments: assignedTasks
+            })
+          });
+          if (response.ok) {
+            const plan = await response.json();
+            currentPlanId = plan.id;
+            console.log('New plan created:', plan);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to save plan:', error);
+        // Don't show error toast - this is auto-save, not user-initiated
+      }
+    }
+
+    function scheduleSave() {
+      // Debounce saves to avoid too many API calls
+      if (saveTimeout) {
+        clearTimeout(saveTimeout);
+      }
+      saveTimeout = setTimeout(() => {
+        savePlan();
+      }, 1000); // Save 1 second after last change
     }
 
     // Modal Functions
@@ -764,6 +849,7 @@
 
       // Update the table immediately
       updateAssignmentsOverview();
+      scheduleSave();
     }
 
     function displayCustomTasks(associateIndex) {
@@ -819,6 +905,7 @@
       // Update display
       displayCustomTasks(currentModalAssociateIndex);
       updateAssignmentsOverview();
+      scheduleSave();
 
       // Clear input
       customTaskInput.value = '';
@@ -835,6 +922,7 @@
       // Update display
       displayCustomTasks(currentModalAssociateIndex);
       updateAssignmentsOverview();
+      scheduleSave();
     }
 
     // Custom task event listeners
@@ -1404,6 +1492,204 @@
       } catch (err) {
         showToast('Failed to copy to clipboard', 'error');
       }
+    });
+
+    // ==========================================
+    // OFFLINE SUPPORT & SERVICE WORKER
+    // ==========================================
+
+    // IndexedDB wrapper for offline storage
+    const DB_NAME = 'stocking-planner-db';
+    const DB_VERSION = 1;
+    const STORE_NAME = 'pending-operations';
+
+    let db = null;
+
+    async function initDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+          db = request.result;
+          resolve(db);
+        };
+
+        request.onupgradeneeded = (event) => {
+          const database = event.target.result;
+          if (!database.objectStoreNames.contains(STORE_NAME)) {
+            const store = database.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+            store.createIndex('timestamp', 'timestamp', { unique: false });
+            store.createIndex('type', 'type', { unique: false });
+          }
+        };
+      });
+    }
+
+    // Add operation to offline queue
+    async function queueOfflineOperation(type, data) {
+      if (!db) await initDB();
+
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+
+        const operation = {
+          type,
+          data,
+          timestamp: new Date().toISOString()
+        };
+
+        const request = store.add(operation);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    // Get all pending operations
+    async function getPendingOperations() {
+      if (!db) await initDB();
+
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.getAll();
+
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    // Remove operation from queue
+    async function removeOperation(id) {
+      if (!db) await initDB();
+
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.delete(id);
+
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    // Sync pending operations when online
+    async function syncPendingOperations() {
+      try {
+        const operations = await getPendingOperations();
+
+        for (const op of operations) {
+          try {
+            if (op.type === 'save-plan') {
+              // Retry saving the plan
+              await savePlan();
+              await removeOperation(op.id);
+              console.log('Synced operation:', op.id);
+            }
+          } catch (error) {
+            console.error('Failed to sync operation:', op.id, error);
+          }
+        }
+
+        if (operations.length > 0) {
+          showToast('Synced offline changes', 'success');
+        }
+      } catch (error) {
+        console.error('Failed to sync pending operations:', error);
+      }
+    }
+
+    // Enhanced save function with offline support
+    const originalSavePlan = savePlan;
+    savePlan = async function() {
+      try {
+        await originalSavePlan();
+      } catch (error) {
+        // If offline, queue the operation
+        if (!navigator.onLine) {
+          await queueOfflineOperation('save-plan', {
+            planId: currentPlanId,
+            planDate: currentPlanDate,
+            assignments: assignedTasks
+          });
+          console.log('Plan queued for offline sync');
+        } else {
+          throw error;
+        }
+      }
+    };
+
+    // Online/offline status monitoring
+    let isOnline = navigator.onLine;
+    const statusDot = document.getElementById('status-dot');
+    const statusText = document.getElementById('status-text');
+
+    function updateOnlineStatus() {
+      const newStatus = navigator.onLine;
+
+      // Update UI indicator
+      if (newStatus) {
+        statusDot.className = 'w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse';
+        statusText.textContent = 'Online';
+      } else {
+        statusDot.className = 'w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse';
+        statusText.textContent = 'Offline';
+      }
+
+      // Handle status change
+      if (newStatus !== isOnline) {
+        isOnline = newStatus;
+
+        if (isOnline) {
+          showToast('Back online - syncing changes...', 'success');
+          syncPendingOperations();
+          // Remove pulse after sync
+          setTimeout(() => {
+            statusDot.className = 'w-2.5 h-2.5 rounded-full bg-green-500';
+          }, 3000);
+        } else {
+          showToast('You are offline - changes will sync when reconnected', 'warning');
+        }
+      }
+    }
+
+    // Set initial status
+    updateOnlineStatus();
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
+    // Service Worker registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/public/service-worker.js')
+          .then((registration) => {
+            console.log('Service Worker registered:', registration.scope);
+
+            // Check for updates
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // New service worker available
+                  if (confirm('A new version is available! Reload to update?')) {
+                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                    window.location.reload();
+                  }
+                }
+              });
+            });
+          })
+          .catch((error) => {
+            console.error('Service Worker registration failed:', error);
+          });
+      });
+    }
+
+    // Initialize offline support
+    initDB().catch(error => {
+      console.error('Failed to initialize IndexedDB:', error);
     });
   </script>
 </body>
